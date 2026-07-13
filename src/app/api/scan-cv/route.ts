@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import PDFParser from 'pdf2json';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy_key');
 
 // Mock database of jobs to search against
 const MOCK_JOBS = [
@@ -45,15 +43,12 @@ export async function POST(req: Request) {
     // Extract skills/keywords via AI to search jobs
     let extractedSkills: string[] = [];
     
-    if (process.env.OPENAI_API_KEY) {
-      const aiRes = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "Extract a comma-separated list of the top 5 technical skills from the following resume text. ONLY return the comma-separated list, nothing else." },
-          { role: "user", content: parsedText.substring(0, 3000) } // limit length
-        ]
-      });
-      const skillString = aiRes.choices[0]?.message?.content || "";
+    if (process.env.GEMINI_API_KEY) {
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = "Extract a comma-separated list of the top 5 technical skills from the following resume text. ONLY return the comma-separated list, nothing else. Resume: " + parsedText.substring(0, 3000);
+      
+      const result = await model.generateContent(prompt);
+      const skillString = result.response.text();
       extractedSkills = skillString.split(',').map(s => s.trim());
     } else {
       // Mock extraction if no API key

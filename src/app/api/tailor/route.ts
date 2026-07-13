@@ -1,49 +1,47 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || 'dummy_key',
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy_key');
 
 export async function POST(req: Request) {
   try {
-    const { baseCv, jobDescription } = await req.json();
+    const { baseCv, jobDescription, targetCompany, jobTitle } = await req.json();
 
     if (!baseCv || !jobDescription) {
-      return NextResponse.json({ error: 'Missing baseCv or jobDescription' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // If no real API key is present, return mock data for the demo
-    if (!process.env.OPENAI_API_KEY) {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      return NextResponse.json({
-        tailoredCv: `[DEMO MODE: No OpenAI API Key found]\n\nTailored Resume:\n\n${baseCv}\n\n---\n* Added keywords from job description: scalability, React, microservices.\n* Re-phrased bullet points to highlight leadership and cloud deployment.`
-      });
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY.includes("dummy")) {
+      // Fallback for Demo
+      const mockResult = `[DEMO MODE: No GEMINI API Key found]\n\nTailored Resume:\n\nJohn Doe\nSoftware Developer\n\nExperience:\nWeb Developer at TechSolutions (2021 - Present)\n- Built web pages using HTML, CSS, and JavaScript.\n- Used React to make a dashboard for clients.\n- Made the website faster so it loads quicker.\n- Worked with designers to make the site look good.\n\nJunior Dev at StartUp Inc (2019 - 2021)\n- Fixed bugs on the front end.\n- Used TypeScript on some projects.\n\n---\n* Added keywords from job description: scalability, React, microservices.\n* Re-phrased bullet points to highlight leadership and cloud deployment.`;
+      
+      return NextResponse.json({ tailoredResume: mockResult });
     }
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert resume writer. Your task is to rewrite the provided base CV to perfectly match the provided Job Description. Optimize bullet points to include relevant keywords, emphasize matching skills, and ensure a professional tone. Return ONLY the tailored CV text."
-        },
-        {
-          role: "user",
-          content: `JOB DESCRIPTION:\n${jobDescription}\n\nBASE CV:\n${baseCv}`
-        }
-      ],
-      temperature: 0.7,
-    });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const tailoredCv = response.choices[0].message?.content || "No content generated.";
+    const prompt = `
+      You are an expert technical recruiter and ATS optimization tool.
+      Take the provided 'Original Resume' and tailor its bullet points to specifically match the 'Job Description' for the role of '${jobTitle}' at '${targetCompany}'.
+      Do not invent new experience, but rephrase existing points to highlight relevant skills and include keywords from the job description.
+      Output ONLY the tailored resume text.
+      
+      Company: ${targetCompany}
+      Job Title: ${jobTitle}
+      
+      Job Description:
+      ${jobDescription}
+      
+      Original Resume:
+      ${baseCv}
+    `;
 
-    return NextResponse.json({ tailoredCv });
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
 
+    return NextResponse.json({ tailoredResume: responseText });
   } catch (error: any) {
-    console.error("Error in /api/tailor:", error);
-    return NextResponse.json({ error: error.message || 'An error occurred' }, { status: 500 });
+    console.error("Gemini Error:", error);
+    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
