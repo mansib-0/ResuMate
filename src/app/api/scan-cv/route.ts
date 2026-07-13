@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     let extractedSkills: string[] = [];
     
     if (process.env.GEMINI_API_KEY) {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const prompt = "Extract a comma-separated list of the top 5 technical skills from the following resume text. ONLY return the comma-separated list, nothing else. Resume: " + parsedText.substring(0, 3000);
       
       const result = await model.generateContent(prompt);
