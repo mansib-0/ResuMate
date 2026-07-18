@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ tailoredResume: mockResult });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `
       You are an expert technical recruiter and ATS optimization tool.
