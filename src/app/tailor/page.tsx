@@ -27,13 +27,13 @@ export default function TailorPage() {
       const res = await fetch("/api/tailor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ baseCv, jobDescription })
+        body: JSON.stringify({ baseCv, jobDescription, targetCompany: company, jobTitle })
       });
       
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to tailor CV");
       
-      setTailoredCv(data.tailoredCv);
+      setTailoredCv(data.tailoredResume || data.tailoredCv || "");
     } catch (err: any) {
       setError(err.message);
     } finally {
