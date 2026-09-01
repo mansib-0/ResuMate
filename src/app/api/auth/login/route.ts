@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '../../../../utils/supabase/server';
 
 export async function POST(req: Request) {
   try {
@@ -9,26 +8,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username and password are required.' }, { status: 400 });
     }
 
-    const supabase = await createClient();
+    const hasSupabase =
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('dummy');
 
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes("dummy")) {
-       // Mock Success
-       return NextResponse.json({ success: true });
+    if (!hasSupabase) {
+      return NextResponse.json({ success: true });
     }
 
-    const pseudoEmail = `${username}@resumate.local`;
+    const { createClient } = await import('../../../../utils/supabase/server');
+    const supabase = await createClient();
+    const pseudoEmail = `${username}@resumate.app`;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: pseudoEmail,
-      password: password,
-    });
-
+    const { error } = await supabase.auth.signInWithPassword({ email: pseudoEmail, password });
     if (error) {
       return NextResponse.json({ error: 'Invalid username or password.' }, { status: 401 });
     }
 
-    return NextResponse.json({ success: true, user: data.user });
-  } catch (error: any) {
+    return NextResponse.json({ success: true });
+  } catch {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

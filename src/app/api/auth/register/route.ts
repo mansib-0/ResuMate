@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '../../../../utils/supabase/server';
 
 export async function POST(req: Request) {
   try {
@@ -8,49 +7,50 @@ export async function POST(req: Request) {
     if (!username || !password) {
       return NextResponse.json({ error: 'Username and password are required.' }, { status: 400 });
     }
-    
     if (username.length < 3) {
       return NextResponse.json({ error: 'Username must be at least 3 characters.' }, { status: 400 });
     }
-
-    const supabase = await createClient();
-
-    // In a fully working app, we would query the database to check if username is taken.
-    // Since we are building for demo and may not have keys, we simulate or try anyway.
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL.includes("dummy")) {
-       // Mock Success
-       return NextResponse.json({ success: true });
+    if (/\s/.test(username)) {
+      return NextResponse.json({ error: 'Username cannot contain spaces.' }, { status: 400 });
+    }
+    if (password.length < 6) {
+      return NextResponse.json({ error: 'Password must be at least 6 characters.' }, { status: 400 });
     }
 
-    // Check if username exists
-    const { data: existingUser } = await supabase
+    const hasSupabase =
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('dummy');
+
+    if (!hasSupabase) {
+      return NextResponse.json({ success: true });
+    }
+
+    const { createClient } = await import('../../../../utils/supabase/server');
+    const supabase = await createClient();
+
+    const { data: existing } = await supabase
       .from('users')
       .select('id')
       .eq('username', username)
       .single();
 
-    if (existingUser) {
-      return NextResponse.json({ error: 'Username is already taken.' }, { status: 400 });
+    if (existing) {
+      return NextResponse.json({ error: 'Username already taken.' }, { status: 400 });
     }
 
-    const pseudoEmail = `${username}@resumate.local`;
-
-    const { data, error } = await supabase.auth.signUp({
+    const pseudoEmail = `${username}@resumate.app`;
+    const { error } = await supabase.auth.signUp({
       email: pseudoEmail,
-      password: password,
-      options: {
-        data: {
-          username: username
-        }
-      }
+      password,
+      options: { data: { username } },
     });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true, user: data.user });
-  } catch (error: any) {
+    return NextResponse.json({ success: true });
+  } catch {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

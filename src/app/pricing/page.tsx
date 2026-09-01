@@ -1,106 +1,172 @@
 "use client";
 
 import styles from "../page.module.css";
-import { Sparkles, Check, ArrowLeft, Bell } from "lucide-react";
+import { Sparkles, Check, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+const PRO_FEATURES = [
+  "PDF Resume Upload & AI Parsing",
+  "Unlimited AI Resume Tailoring",
+  "Instant Job Search Engine",
+  "Kanban Application Tracker",
+  "ATS Keyword Optimization",
+  "Priority Email Support",
+];
+
+const ULTRA_FEATURES = [
+  "Everything in Pro",
+  "Resume Memory Storage",
+  "24/7 Automated Job Scraping",
+  "Instant Push Notifications for Matches",
+  "AI Cover Letter Writing",
+  "Outreach Email Templates",
+  "Dedicated Account Manager",
+];
+
+const COMPARISON = [
+  { feature: "AI Resume Tailoring", pro: true, ultra: true },
+  { feature: "PDF CV Upload & Parse", pro: true, ultra: true },
+  { feature: "Kanban Tracker", pro: true, ultra: true },
+  { feature: "ATS Keyword Score", pro: true, ultra: true },
+  { feature: "Automated Job Scraping", pro: false, ultra: true },
+  { feature: "Push Notifications", pro: false, ultra: true },
+  { feature: "Cover Letter AI", pro: false, ultra: true },
+  { feature: "Resume Memory", pro: false, ultra: true },
+];
 
 export default function PricingPage() {
+  const router = useRouter();
   const [loadingPro, setLoadingPro] = useState(false);
   const [loadingUltra, setLoadingUltra] = useState(false);
 
-  const handleSubscribe = async (tier: 'pro' | 'ultra_pro') => {
-    if (tier === 'pro') setLoadingPro(true);
+  const handleSubscribe = async (tier: "pro" | "ultra_pro") => {
+    if (tier === "pro") setLoadingPro(true);
     else setLoadingUltra(true);
-
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier })
+        body: JSON.stringify({ tier }),
       });
       const data = await res.json();
-      
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error(data.error || "Failed to create checkout session");
+        router.push("/register");
       }
-    } catch (err: any) {
-      alert(err.message);
+    } catch {
+      router.push("/register");
     } finally {
-      if (tier === 'pro') setLoadingPro(false);
-      else setLoadingUltra(false);
+      setLoadingPro(false);
+      setLoadingUltra(false);
     }
   };
 
   return (
     <div className={styles.container}>
       <nav className={styles.nav}>
-        <div className={styles.logo}>
-          <Sparkles className={styles.logoIcon} /> ResuMate
+        <div className={styles.logo}><Sparkles className={styles.logoIcon} /> ResuMate</div>
+        <div className={styles.navLinks}>
+          <Link href="/" className={styles.btnSecondary} style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <ArrowLeft size={15} /> Home
+          </Link>
+          <Link href="/login" className={styles.btnSecondary}>Login</Link>
         </div>
-        <Link href="/" className="btn-secondary" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <ArrowLeft size={16} /> Back to Home
-        </Link>
       </nav>
 
-      <main style={{ padding: "4rem 0", textAlign: "center" }}>
-        <h1 className={styles.title} style={{ fontSize: "3rem", marginBottom: "1rem", marginInline: "auto" }}>
-          Choose Your Edge
-        </h1>
-        <p className={styles.subtitle} style={{ marginInline: "auto", marginBottom: "4rem" }}>
-          Invest in your career. Land the interview with AI-powered matching and automated alerts.
-        </p>
+      <main style={{ paddingBottom: "6rem" }}>
+        <div style={{ textAlign: "center", paddingTop: "4rem", paddingBottom: "3rem" }}>
+          <h1 className={styles.title} style={{ fontSize: "3rem", marginInline: "auto" }}>
+            Choose Your <span className="heading-gradient">Edge</span>
+          </h1>
+          <p className={styles.subtitle} style={{ marginInline: "auto", marginTop: "1rem" }}>
+            No free tier. Every plan is built for serious job seekers who want results.
+          </p>
+        </div>
 
+        {/* Plan cards */}
         <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
-          
-          {/* Pro Tier */}
-          <div className="glass-panel" style={{ width: "350px", padding: "2.5rem", textAlign: "left", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            <h2>Pro Version</h2>
-            <div style={{ fontSize: "2.5rem", fontWeight: "700" }}>$15<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", fontWeight: "400" }}>/month</span></div>
-            <p style={{ color: "rgba(255,255,255,0.7)" }}>Perfect for active job seekers needing deep resume analysis.</p>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "1rem", padding: 0 }}>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> PDF Resume Upload & Parsing</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> Instant AI Job Search Engine</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> Unlimited AI Resume Tailoring</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> Kanban Board Tracker</li>
-            </ul>
-            <button 
-              className="btn-secondary" 
-              style={{ marginTop: "auto", border: "1px solid var(--primary)", color: "white" }}
-              onClick={() => handleSubscribe('pro')}
-              disabled={loadingPro || loadingUltra}
-            >
-              {loadingPro ? "Processing..." : "Get Pro"}
-            </button>
-          </div>
-
-          {/* Ultra Pro Tier */}
-          <div className="glass-panel" style={{ width: "350px", padding: "2.5rem", textAlign: "left", display: "flex", flexDirection: "column", gap: "1.5rem", border: "1px solid var(--primary)", position: "relative" }}>
-            <div style={{ position: "absolute", top: "-12px", left: "50%", transform: "translateX(-50%)", background: "var(--primary)", padding: "0.25rem 1rem", borderRadius: "20px", fontSize: "0.8rem", fontWeight: "600" }}>
-              ULTRA PRO
+          {/* Pro */}
+          <div className="glass-panel" style={{ width: 360, padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Pro</h2>
+            <div style={{ fontSize: "3rem", fontWeight: 700, lineHeight: 1 }}>
+              $15<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", fontWeight: 400 }}>/month</span>
             </div>
-            <h2>Ultra Pro</h2>
-            <div style={{ fontSize: "2.5rem", fontWeight: "700" }}>$29<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", fontWeight: "400" }}>/month</span></div>
-            <p style={{ color: "rgba(255,255,255,0.7)" }}>For serious hunters. Let the AI find jobs for you while you sleep.</p>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "1rem", padding: 0 }}>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><strong>Everything in Pro, plus:</strong></li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Bell size={18} color="var(--secondary)"/> Resume Memory storage</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Bell size={18} color="var(--secondary)"/> 24/7 Automated Job Scraping</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> Instant Push Notifications for Matches</li>
-              <li style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}><Check size={18} color="var(--success)"/> Cover Letter writing & Outreach</li>
+            <p style={{ color: "rgba(255,255,255,0.7)" }}>Perfect for active job seekers needing deep resume analysis.</p>
+            <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.85rem", flex: 1 }}>
+              {PRO_FEATURES.map(f => (
+                <li key={f} style={{ display: "flex", gap: "0.6rem", alignItems: "center", fontSize: "0.9rem" }}>
+                  <Check size={16} color="var(--success)" style={{ flexShrink: 0 }} /> {f}
+                </li>
+              ))}
             </ul>
-            <button 
-              className="btn-primary" 
-              style={{ marginTop: "auto" }}
-              onClick={() => handleSubscribe('ultra_pro')}
+            <button
+              className="btn-secondary"
+              style={{ border: "1px solid var(--primary)", color: "white", marginTop: "auto" }}
+              onClick={() => handleSubscribe("pro")}
               disabled={loadingPro || loadingUltra}
             >
-              {loadingUltra ? "Processing..." : "Upgrade to Ultra Pro"}
+              {loadingPro ? "Processing…" : "Get Pro"}
             </button>
           </div>
 
+          {/* Ultra Pro */}
+          <div className="glass-panel" style={{ width: 360, padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem", border: "1px solid var(--primary)", position: "relative" }}>
+            <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "var(--primary)", padding: "0.3rem 1.2rem", borderRadius: 20, fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.08em", whiteSpace: "nowrap" }}>
+              MOST POPULAR
+            </div>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Ultra Pro</h2>
+            <div style={{ fontSize: "3rem", fontWeight: 700, lineHeight: 1 }}>
+              $29<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", fontWeight: 400 }}>/month</span>
+            </div>
+            <p style={{ color: "rgba(255,255,255,0.7)" }}>For serious hunters. Let AI find jobs while you sleep.</p>
+            <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.85rem", flex: 1 }}>
+              {ULTRA_FEATURES.map(f => (
+                <li key={f} style={{ display: "flex", gap: "0.6rem", alignItems: "center", fontSize: "0.9rem" }}>
+                  <Check size={16} color="var(--secondary)" style={{ flexShrink: 0 }} /> {f}
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn-primary"
+              style={{ marginTop: "auto" }}
+              onClick={() => handleSubscribe("ultra_pro")}
+              disabled={loadingPro || loadingUltra}
+            >
+              {loadingUltra ? "Processing…" : "Get Ultra Pro"}
+            </button>
+          </div>
+        </div>
+
+        {/* Comparison table */}
+        <div style={{ maxWidth: 760, margin: "5rem auto 0" }}>
+          <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "1.75rem" }}>Feature Comparison</h2>
+          <div className="glass-panel" style={{ overflow: "hidden" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
+                  <th style={{ padding: "1rem 1.5rem", textAlign: "left", color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>Feature</th>
+                  <th style={{ padding: "1rem 1.5rem", textAlign: "center", color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>Pro</th>
+                  <th style={{ padding: "1rem 1.5rem", textAlign: "center", color: "var(--primary)", fontWeight: 600 }}>Ultra Pro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map((row, i) => (
+                  <tr key={row.feature} style={{ borderBottom: i < COMPARISON.length - 1 ? "1px solid var(--card-border)" : "none" }}>
+                    <td style={{ padding: "0.9rem 1.5rem", fontSize: "0.92rem" }}>{row.feature}</td>
+                    <td style={{ padding: "0.9rem 1.5rem", textAlign: "center" }}>
+                      {row.pro ? <Check size={18} color="var(--success)" /> : <span style={{ color: "rgba(255,255,255,0.2)" }}>—</span>}
+                    </td>
+                    <td style={{ padding: "0.9rem 1.5rem", textAlign: "center" }}>
+                      {row.ultra ? <Check size={18} color="var(--success)" /> : <span style={{ color: "rgba(255,255,255,0.2)" }}>—</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </main>
     </div>

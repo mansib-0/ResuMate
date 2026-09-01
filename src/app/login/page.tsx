@@ -17,20 +17,17 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
-
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-
+      if (!res.ok) throw new Error(data.error || "Login failed");
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
@@ -42,49 +39,61 @@ export default function LoginPage() {
         <div className={styles.logo}>
           <Sparkles className={styles.logoIcon} /> ResuMate
         </div>
-        <Link href="/" className="btn-secondary" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <Link href="/" className={styles.btnSecondary} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <ArrowLeft size={16} /> Back to Home
         </Link>
       </nav>
 
       <main style={{ padding: "4rem 0", display: "flex", justifyContent: "center" }}>
-        <div className="glass-panel" style={{ width: "400px", padding: "2.5rem" }}>
+        <div className="glass-panel" style={{ width: "420px", padding: "2.5rem" }}>
           <h1 style={{ marginBottom: "1.5rem", textAlign: "center", fontSize: "2rem" }}>Welcome Back</h1>
-          
-          {error && <div style={{ color: "var(--error)", background: "rgba(239, 68, 68, 0.1)", padding: "1rem", borderRadius: "8px", marginBottom: "1.5rem", fontSize: "0.9rem" }}>{error}</div>}
 
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          {error && (
+            <div style={{ color: "var(--error)", background: "rgba(239,68,68,0.1)", padding: "1rem", borderRadius: "8px", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <label style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>Username</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none" }}
+                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none", fontFamily: "inherit" }}
                 placeholder="jobhunter99"
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <label style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>Password</label>
-              <input 
-                type="password" 
+              <input
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none" }}
+                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none", fontFamily: "inherit" }}
                 placeholder="••••••••"
               />
             </div>
 
-            <button type="submit" className="btn-primary" disabled={loading} style={{ width: "100%", marginTop: "1rem" }}>
-              {loading ? "Logging in..." : "Log in"}
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={loading}
+              style={{ marginTop: "0.5rem" }}
+            >
+              {loading ? "Logging in…" : "Log In"}
             </button>
           </form>
 
           <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
-            Don't have an account? <Link href="/register" style={{ color: "var(--primary)", textDecoration: "underline" }}>Register here</Link>
+            Don&apos;t have an account?{" "}
+            <Link href="/register" style={{ color: "var(--primary)", textDecoration: "underline" }}>
+              Register here
+            </Link>
           </p>
         </div>
       </main>
