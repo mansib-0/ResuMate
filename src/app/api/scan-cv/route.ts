@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       try {
         const { GoogleGenerativeAI } = await import("@google/generative-ai");
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
         const result = await model.generateContent(
           "Extract exactly the top 5 technical skills from this resume. Return ONLY a comma-separated list, nothing else.\n\n" +
           parsedText.substring(0, 3000)
