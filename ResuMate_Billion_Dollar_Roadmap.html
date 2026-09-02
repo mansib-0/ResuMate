@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>ResuMate — Billion-Dollar Roadmap</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 20mm 18mm;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.65;
+    color: #1a1a2e;
+    background: #fff;
+    padding: 0;
+  }
+  
+  /* Cover page */
+  .cover {
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    color: white;
+    padding: 60px 40px;
+    margin: -20mm -18mm 0 -18mm;
+    width: calc(100% + 36mm);
+  }
+  .cover h1 {
+    font-size: 42pt;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #a78bfa, #818cf8, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cover .subtitle {
+    font-size: 18pt;
+    font-weight: 300;
+    color: #c4b5fd;
+    margin-bottom: 50px;
+  }
+  .cover .tagline {
+    font-size: 13pt;
+    color: rgba(255,255,255,0.7);
+    max-width: 500px;
+    line-height: 1.8;
+    margin-bottom: 60px;
+  }
+  .cover .meta {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.5);
+    line-height: 2;
+  }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(99, 102, 241, 0.5);
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-size: 10pt;
+    color: #a78bfa;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  
+  /* Content */
+  .content {
+    padding: 0;
+  }
+  
+  h1 {
+    font-size: 22pt;
+    color: #1e1b4b;
+    margin: 40px 0 16px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #6366f1;
+    page-break-after: avoid;
+  }
+  h2 {
+    font-size: 16pt;
+    color: #312e81;
+    margin: 30px 0 12px 0;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 13pt;
+    color: #4338ca;
+    margin: 22px 0 8px 0;
+    page-break-after: avoid;
+  }
+  h4 {
+    font-size: 11pt;
+    color: #4f46e5;
+    margin: 16px 0 6px 0;
+    page-break-after: avoid;
+  }
+  
+  p {
+    margin: 8px 0;
+    text-align: justify;
+  }
+  
+  strong { color: #1e1b4b; }
+  em { color: #4338ca; font-style: italic; }
+  
+  code {
+    background: #f1f0fb;
+    color: #4338ca;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9.5pt;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  }
+  
+  pre {
+    background: #1e1b4b;
+    color: #e0e7ff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-size: 9pt;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+  pre code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+  }
+  
+  blockquote {
+    border-left: 4px solid #6366f1;
+    background: #f5f3ff;
+    padding: 14px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #3730a3;
+    page-break-inside: avoid;
+  }
+  
+  hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #a78bfa, transparent);
+    margin: 30px 0;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  thead {
+    background: #1e1b4b;
+    color: white;
+  }
+  th {
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  tbody tr:nth-child(even) {
+    background: #f9fafb;
+  }
+  tbody tr:hover {
+    background: #f5f3ff;
+  }
+  
+  /* Lists */
+  ul, ol {
+    margin: 8px 0 8px 24px;
+  }
+  li {
+    margin: 4px 0;
+  }
+  li.nested {
+    margin-left: 20px;
+    color: #4b5563;
+  }
+  
+  /* Checkboxes */
+  .checkbox {
+    padding: 4px 0 4px 4px;
+    font-size: 10pt;
+    color: #6b7280;
+  }
+  .checkbox.checked {
+    color: #059669;
+  }
+  
+  /* Page breaks at major sections */
+  h1 {
+    page-break-before: always;
+  }
+  h1:first-of-type {
+    page-break-before: avoid;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 8pt;
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="badge">Confidential Business Plan</div>
+  <h1 style="border:none; page-break-before:avoid; margin:0 0 8px 0; padding:0; color:white; -webkit-text-fill-color:transparent;">ResuMate</h1>
+  <div class="subtitle">The Billion-Dollar Roadmap</div>
+  <div class="tagline">
+    A comprehensive strategic plan covering technology, legal structure, accounting, finance, fundraising, team building, marketing, and global expansion — from first commit to IPO.
+  </div>
+  <div class="meta">
+    <strong style="color:#c4b5fd;">Founder:</strong> Mansib Saiful<br/>
+    <strong style="color:#c4b5fd;">Location:</strong> Dhaka, Bangladesh<br/>
+    <strong style="color:#c4b5fd;">Date:</strong> September 2026<br/>
+    <strong style="color:#c4b5fd;">Version:</strong> 1.0
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+<h1>ResuMate — The Billion-Dollar Roadmap</h1>
+<h2>From Side Project to Global Career Platform</h2>
+<strong>Confidential Business Plan & Strategic Roadmap</strong>
+<strong>Founder: Mansib Saiful | Dhaka, Bangladesh</strong>
+<strong>Date: September 2026</strong>
+<hr/>
+<h1>Table of Contents</h1>
+<ol><li class="ol-item">Executive Summary</li>
+<li class="ol-item">Vision, Mission & Core Values</li>
+<li class="ol-item">Market Analysis & Opportunity</li>
+<li class="ol-item">Product Roadmap (5-Year Technical Plan)</li>
+<li class="ol-item">Business Model & Revenue Strategy</li>
+<li class="ol-item">Legal & Corporate Structure</li>
+<li class="ol-item">Accounting & Financial Infrastructure</li>
+<li class="ol-item">Fundraising Strategy (Seed → Series D → IPO)</li>
+<li class="ol-item">Team Building & Organizational Design</li>
+<li class="ol-item">Marketing & Growth Engine</li>
+<li class="ol-item">International Expansion Plan</li>
+<li class="ol-item">Intellectual Property Strategy</li>
+<li class="ol-item">Risk Management & Compliance</li>
+<li class="ol-item">Key Performance Indicators (KPIs)</li>
+<li class="ol-item">5-Year Financial Projections</li>
+<li class="ol-item">Exit Strategy & IPO Preparation</li>
+<li class="ol-item">Appendix: Action Checklists</li>
+</ol>
+<hr/>
+<h1>1. Executive Summary</h1>
+<p>ResuMate is an AI-powered career platform that transforms how job seekers create resumes, find jobs, and track applications. Starting as a SaaS product for resume optimization, our vision is to become the world's definitive career intelligence platform — the "Bloomberg Terminal for your career."</p>
+<strong>The Problem:</strong> Job seekers spend 3-6 hours per application customizing resumes. 75% of resumes are rejected by ATS (Applicant Tracking Systems) before a human ever sees them. The global job search market is fragmented, inefficient, and emotionally draining.
+<strong>The Solution:</strong> ResuMate uses AI to instantly tailor resumes to match specific job descriptions, automatically discover matching jobs, and track every application on a smart Kanban board. Ultra Pro users receive real-time notifications when new matching jobs appear.
+<strong>Market Size:</strong>
+<ul><li>Total Addressable Market (TAM): $47B (global HR tech)</li>
+<li>Serviceable Addressable Market (SAM): $12B (job search tools + resume builders)</li>
+<li>Serviceable Obtainable Market (SOM): $500M (initial 3-year target)</li>
+</ul>
+<strong>Revenue Model:</strong> Subscription SaaS (Pro at $15/mo, Ultra Pro at $29/mo) expanding into enterprise B2B, recruitment marketplace, and career coaching.
+<strong>Target Valuation Timeline:</strong>
+<ul><li>Year 1: $5M (Pre-Seed/Seed)</li>
+<li>Year 2: $50M (Series A)</li>
+<li>Year 3: $250M (Series B)</li>
+<li>Year 4: $750M (Series C)</li>
+<li>Year 5: $1B+ (Series D / Pre-IPO)</li>
+</ul>
+<hr/>
+<h1>2. Vision, Mission & Core Values</h1>
+<h2>Vision</h2>
+<em>"A world where every qualified person lands the job they deserve, IN SHA ALLAH."</em>
+<h2>Mission</h2>
+To eliminate the friction between talent and opportunity by using artificial intelligence to make every job application perfect.
+<h2>Core Values</h2>
+<ol><li class="ol-item"><strong>Tawakkul (Trust in Allah)</strong> — We build with excellence and leave the results to Allah.</li>
+<li class="ol-item"><strong>User Obsession</strong> — Every feature must save the user time or reduce their stress.</li>
+<li class="ol-item"><strong>Radical Transparency</strong> — Honest pricing, no dark patterns, no hidden fees.</li>
+<li class="ol-item"><strong>Data Privacy First</strong> — User resume data is sacred. Never sold, never shared.</li>
+<li class="ol-item"><strong>Global by Default</strong> — Built for every language, every country, every culture.</li>
+</ol>
+<hr/>
+<h1>3. Market Analysis & Opportunity</h1>
+<h2>3.1 Industry Overview</h2>
+<p>The global HR technology market was valued at $32.6B in 2024 and is projected to reach $76.5B by 2031 (CAGR: 12.8%). The AI-in-recruitment segment alone is expected to hit $1.8B by 2028.</p>
+<h2>3.2 Target Customer Segments</h2>
+<h3>Segment 1: University Students & Fresh Graduates (Year 1 Focus)</h3>
+<ul><li>200M+ globally</li>
+<li>Pain: No experience writing resumes, don't understand ATS</li>
+<li>Willingness to Pay: $5-15/month</li>
+<li>Acquisition: University partnerships, TikTok, Instagram</li>
+</ul>
+<h3>Segment 2: Active Job Seekers (Year 1-2)</h3>
+<ul><li>400M+ actively job searching globally at any time</li>
+<li>Pain: Spending hours per application, getting rejected by ATS</li>
+<li>Willingness to Pay: $15-29/month</li>
+<li>Acquisition: Google Ads (high intent: "resume builder"), SEO, Reddit</li>
+</ul>
+<h3>Segment 3: Career Changers & Upskilling Professionals (Year 2-3)</h3>
+<ul><li>50M+ globally</li>
+<li>Pain: Translating transferable skills to new industry keywords</li>
+<li>Willingness to Pay: $29-49/month</li>
+<li>Acquisition: LinkedIn ads, partnerships with bootcamps</li>
+</ul>
+<h3>Segment 4: Recruiters & HR Teams — B2B (Year 3-5)</h3>
+<ul><li>1.5M+ recruiting agencies, 500K+ corporate HR teams</li>
+<li>Pain: Screening 250+ resumes per opening</li>
+<li>Willingness to Pay: $99-999/month per seat</li>
+<li>Acquisition: Direct sales, HR conferences, integrations</li>
+</ul>
+<h2>3.3 Competitive Landscape</h2>
+<table><thead><tr><th>Competitor</th><th>Weakness</th><th>ResuMate Advantage</th></tr></thead><tbody><tr><td>Canva Resume</td><td>No AI tailoring, no ATS optimization</td><td>AI keyword injection per job</td></tr><tr><td>Resumé.io</td><td>Template-only, no job matching</td><td>Auto job search from CV</td></tr><tr><td>Jobscan</td><td>Expensive ($50/mo), no resume editing</td><td>All-in-one: edit + match + track</td></tr><tr><td>LinkedIn Easy Apply</td><td>Generic resume for all jobs</td><td>Unique resume per application</td></tr><tr><td>ChatGPT (manual)</td><td>No tracking, no job search, requires prompting</td><td>One-click fully automated</td></tr></tbody></table>
+<h2>3.4 Competitive Moat (Defensibility)</h2>
+<ol><li class="ol-item"><strong>Data Moat:</strong> Every resume processed teaches our AI what keywords get interviews → proprietary dataset.</li>
+<li class="ol-item"><strong>Network Effects:</strong> As more users apply through ResuMate, we learn which resume formats get callbacks, creating an unfair advantage.</li>
+<li class="ol-item"><strong>Switching Costs:</strong> Application history, saved resumes, and job tracker data lock users in.</li>
+<li class="ol-item"><strong>Brand:</strong> "ResuMate" becomes a verb — "I ResuMated my resume."</li>
+</ol>
+<hr/>
+<h1>4. Product Roadmap (5-Year Technical Plan)</h1>
+<h2>Phase 1: Foundation (Months 1-6) — "The MVP"</h2>
+<strong>Status: ✅ COMPLETE</strong>
+<div class="checkbox checked">☑ AI Resume Tailoring (Gemini API)</div>
+<div class="checkbox checked">☑ PDF CV Upload & Parsing</div>
+<div class="checkbox checked">☑ Auto Job Matching from CV</div>
+<div class="checkbox checked">☑ Kanban Application Tracker (drag-and-drop)</div>
+<div class="checkbox checked">☑ User Authentication (username/password)</div>
+<div class="checkbox checked">☑ Stripe Payment Integration</div>
+<div class="checkbox checked">☑ Pro ($15/mo) & Ultra Pro ($29/mo) tiers</div>
+<div class="checkbox checked">☑ Settings (account, billing, notifications)</div>
+<div class="checkbox checked">☑ Deployed on Vercel</div>
+<h2>Phase 2: Polish & Growth (Months 7-12) — "Product-Market Fit"</h2>
+<div class="checkbox">☐ AI Cover Letter Generator (one-click)</div>
+<div class="checkbox">☐ LinkedIn Outreach Template Generator</div>
+<div class="checkbox">☐ Resume Templates (5 professional designs)</div>
+<div class="checkbox">☐ Export tailored resume as PDF (formatted)</div>
+<div class="checkbox">☐ Chrome Extension: "ResuMate This Job" button on LinkedIn/Indeed</div>
+<div class="checkbox">☐ Email notifications for new job matches (Ultra Pro)</div>
+<div class="checkbox">☐ Referral system (invite friends → get 1 month free)</div>
+<div class="checkbox">☐ Mobile-responsive PWA (Progressive Web App)</div>
+<div class="checkbox">☐ Analytics dashboard (how many jobs applied, response rate)</div>
+<div class="checkbox">☐ Multi-language support (Bengali, Arabic, Spanish, French, Hindi)</div>
+<h2>Phase 3: Intelligence Layer (Year 2) — "The Moat"</h2>
+<div class="checkbox">☐ Interview Prep AI (practice questions based on job description)</div>
+<div class="checkbox">☐ Salary Negotiation Assistant (market data + scripts)</div>
+<div class="checkbox">☐ Resume Score & Feedback (before vs. after comparison)</div>
+<div class="checkbox">☐ ATS Simulation (show exactly how ATS sees your resume)</div>
+<div class="checkbox">☐ Real-time job scraping (LinkedIn, Indeed, Glassdoor APIs)</div>
+<div class="checkbox">☐ Skills Gap Analysis ("You need X certification for this role")</div>
+<div class="checkbox">☐ Portfolio Builder (auto-generate a portfolio site from CV)</div>
+<div class="checkbox">☐ API for universities and bootcamps</div>
+<h2>Phase 4: Enterprise & B2B (Year 3) — "The Revenue Multiplier"</h2>
+<div class="checkbox">☐ ResuMate for Recruiters (bulk resume screening, candidate ranking)</div>
+<div class="checkbox">☐ University Dashboard (track student placement rates)</div>
+<div class="checkbox">☐ Company Career Page Widget ("Apply with ResuMate" button)</div>
+<div class="checkbox">☐ Applicant Tracking System (ATS) for small companies</div>
+<div class="checkbox">☐ White-label solution for recruitment agencies</div>
+<div class="checkbox">☐ Slack/Teams integrations for HR teams</div>
+<div class="checkbox">☐ SOC 2 Type II Compliance</div>
+<div class="checkbox">☐ GDPR & data residency compliance</div>
+<h2>Phase 5: Platform & Ecosystem (Year 4-5) — "The Billion-Dollar Play"</h2>
+<div class="checkbox">☐ ResuMate Marketplace (career coaches, resume writers, mentors)</div>
+<div class="checkbox">☐ ResuMate Verified Badge (blockchain-verified credentials)</div>
+<div class="checkbox">☐ AI Career Advisor (personalized 5-year career path)</div>
+<div class="checkbox">☐ ResuMate Jobs Board (direct employer listings with one-click apply)</div>
+<div class="checkbox">☐ ResuMate Academy (courses to build missing skills)</div>
+<div class="checkbox">☐ Open API + Developer Platform</div>
+<div class="checkbox">☐ Mobile apps (iOS & Android native)</div>
+<div class="checkbox">☐ Desktop apps (Electron)</div>
+<div class="checkbox">☐ Annual "ResuMate Career Summit" conference</div>
+<h2>Technical Architecture Evolution</h2>
+<pre><code class="lang-">Year 1 (Current):
+  Next.js → Vercel → Supabase → Gemini API → Stripe
+<p>Year 2:<br/>  Next.js → Vercel/AWS → Supabase+Redis → Gemini+Claude → Stripe<br/>  + Chrome Extension + PWA + Job Scraping Workers (Cloudflare)</p>
+<p>Year 3-5:<br/>  Microservices (Go/Rust) → Kubernetes (AWS EKS)<br/>  PostgreSQL + Elasticsearch + Redis + S3<br/>  ML Pipeline (Vertex AI) → Custom fine-tuned models<br/>  Real-time: WebSockets + Kafka<br/>  CDN: CloudFront (global)<br/>  Mobile: React Native<br/></code></pre></p>
+<hr/>
+<h1>5. Business Model & Revenue Strategy</h1>
+<h2>5.1 Pricing Tiers</h2>
+<h3>Pro Plan — $15/month ($144/year with 20% annual discount)</h3>
+<ul><li>Unlimited AI resume tailoring</li>
+<li>Cover letter generation</li>
+<li>LinkedIn outreach templates</li>
+<li>Kanban application tracker</li>
+<li>50 job matches per month</li>
+<li>Email support</li>
+</ul>
+<h3>Ultra Pro Plan — $29/month ($278/year with 20% annual discount)</h3>
+<ul><li>Everything in Pro</li>
+<li>Real-time job match notifications</li>
+<li>Resume stored in memory (auto-match new jobs)</li>
+<li>Priority AI processing</li>
+<li>ATS simulation score</li>
+<li>Interview prep questions</li>
+<li>Priority support + live chat</li>
+<li>Early access to new features</li>
+</ul>
+<h3>Enterprise Plan — $99-999/month per seat (Year 3+)</h3>
+<ul><li>Bulk resume screening</li>
+<li>Candidate ranking & scoring</li>
+<li>University/company dashboards</li>
+<li>API access</li>
+<li>Dedicated account manager</li>
+<li>Custom integrations</li>
+<li>SLA guarantee</li>
+</ul>
+<h2>5.2 Revenue Streams</h2>
+<table><thead><tr><th>Stream</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody><tr><td>B2C Subscriptions</td><td>90%</td><td>70%</td><td>50%</td><td>35%</td><td>25%</td></tr><tr><td>B2B Enterprise</td><td>0%</td><td>10%</td><td>25%</td><td>30%</td><td>30%</td></tr><tr><td>Marketplace Commissions</td><td>0%</td><td>5%</td><td>10%</td><td>15%</td><td>20%</td></tr><tr><td>API Licensing</td><td>0%</td><td>5%</td><td>5%</td><td>10%</td><td>10%</td></tr><tr><td>Career Courses</td><td>0%</td><td>5%</td><td>5%</td><td>5%</td><td>10%</td></tr><tr><td>Events & Conferences</td><td>0%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td></tr></tbody></table>
+<h2>5.3 Unit Economics Target</h2>
+<ul><li><strong>Customer Acquisition Cost (CAC):</strong> < $15 (target: $8)</li>
+<li><strong>Lifetime Value (LTV):</strong> > $180 (average 12-month subscription)</li>
+<li><strong>LTV:CAC Ratio:</strong> > 12:1 (healthy is > 3:1)</li>
+<li><strong>Monthly Churn:</strong> < 5% (target: 3%)</li>
+<li><strong>Gross Margin:</strong> > 85% (SaaS standard)</li>
+<li><strong>Payback Period:</strong> < 2 months</li>
+</ul>
+<hr/>
+<h1>6. Legal & Corporate Structure</h1>
+<h2>6.1 Company Registration (Step-by-Step)</h2>
+<h3>Step 1: Register in Bangladesh (Immediate)</h3>
+<ol><li class="ol-item"><strong>Sole Proprietorship</strong> via RJSC (Registrar of Joint Stock Companies and Firms)</li>
+</ol>   - Cost: ~3,000 BDT
+   - Time: 1-2 weeks
+   - Required: NID, TIN certificate, trade license
+<ol><li class="ol-item">Get a <strong>Trade License</strong> from Dhaka City Corporation</li>
+</ol>   - Cost: ~5,000-10,000 BDT
+<ol><li class="ol-item">Register for <strong>TIN (Tax Identification Number)</strong> at NBR</li>
+<li class="ol-item">Open a <strong>business bank account</strong> at a local bank (DBBL, Brac Bank, or City Bank recommended for tech startups)</li>
+</ol>
+<h3>Step 2: Register in the USA (Before Fundraising)</h3>
+<ol><li class="ol-item"><strong>Incorporate a Delaware C-Corporation</strong> via Stripe Atlas ($500)</li>
+</ol>   - Why Delaware: 90% of US startups + all VCs require it
+   - Stripe Atlas provides: Incorporation + EIN + Mercury bank account + Carta cap table + legal templates
+<ol><li class="ol-item"><strong>Register as a Foreign Corporation</strong> in your operating state (if needed)</li>
+<li class="ol-item">Get an <strong>EIN (Employer Identification Number)</strong> from IRS (free)</li>
+<li class="ol-item">Open a <strong>Mercury</strong> or <strong>Brex</strong> business bank account (both are startup-friendly, online, no minimum balance)</li>
+</ol>
+<h3>Step 3: Holding Structure</h3>
+<pre><code class="lang-">ResuMate Inc. (Delaware C-Corp) — Parent Company
+  ├── ResuMate BD Ltd. (Bangladesh) — R&D & Engineering
+  ├── ResuMate EU Ltd. (Ireland/Estonia) — EU Operations (Year 3+)
+  └── ResuMate MENA FZ-LLC (Dubai) — Middle East Operations (Year 4+)
+</code></pre>
+<h2>6.2 Essential Legal Documents</h2>
+<table><thead><tr><th>Document</th><th>When</th><th>Estimated Cost</th><th>Provider</th></tr></thead><tbody><tr><td>Terms of Service</td><td>Before launch</td><td>$500-2,000</td><td>Termly.io / Lawyer</td></tr><tr><td>Privacy Policy (GDPR + CCPA)</td><td>Before launch</td><td>$500-2,000</td><td>Termly.io / Lawyer</td></tr><tr><td>Cookie Consent Banner</td><td>Before launch</td><td>Free (CookieYes)</td><td>CookieYes</td></tr><tr><td>Acceptable Use Policy</td><td>Before launch</td><td>$300</td><td>Template + review</td></tr><tr><td>Founder Vesting Agreement (4-year, 1-year cliff)</td><td>Before co-founders</td><td>$1,000-3,000</td><td>Carta / Lawyer</td></tr><tr><td>Confidentiality/NDA Template</td><td>Before hiring</td><td>$200</td><td>LegalZoom</td></tr><tr><td>Employee/Contractor Agreement</td><td>Before hiring</td><td>$500-1,500</td><td>Deel / Remote.com</td></tr><tr><td>IP Assignment Agreement</td><td>Before hiring</td><td>$500</td><td>Lawyer</td></tr><tr><td>SAFE Note (for seed fundraising)</td><td>Before fundraising</td><td>Free (YC template)</td><td>Y Combinator</td></tr><tr><td>Stockholders Agreement</td><td>Series A</td><td>$5,000-15,000</td><td>Startup lawyer</td></tr><tr><td>Data Processing Agreement (DPA)</td><td>Before EU users</td><td>$500-2,000</td><td>Lawyer</td></tr></tbody></table>
+<h2>6.3 Choosing a Startup Lawyer</h2>
+<strong>Recommended firms for early-stage:</strong>
+<ul><li><strong>Gunderson Dettmer</strong> (Silicon Valley standard, works with YC companies)</li>
+<li><strong>Cooley LLP</strong> (top startup law firm)</li>
+<li><strong>Orrick</strong> (strong in tech + international)</li>
+<li><strong>Fenwick & West</strong> (Bay Area focused)</li>
+<li><strong>Clerky</strong> (automated legal for early startups, cheapest)</li>
+</ul>
+<strong>In Bangladesh:</strong>
+<ul><li><strong>The Legal Circle</strong> (Dhaka, tech-savvy)</li>
+<li><strong>FM Associates</strong> (corporate/startup law)</li>
+</ul>
+<strong>Budget:</strong> $5,000-15,000 for Year 1 legal costs (can defer most until fundraising).
+<h2>6.4 Intellectual Property</h2>
+<ol><li class="ol-item"><strong>Trademark "ResuMate"</strong></li>
+</ol>   - File in Bangladesh (DPDT): ~5,000 BDT
+   - File in USA (USPTO): ~$350 per class (file in Class 42: SaaS)
+   - File internationally via Madrid Protocol: ~$1,000-3,000
+   - Timeline: 8-12 months for approval
+<ol><li class="ol-item"><strong>Domain Protection</strong></li>
+</ol>   - Secure: resumate.com, resumate.io, resumate.ai, resumate.app
+   - Cost: $50-500 per domain
+<ol><li class="ol-item"><strong>Software Copyright</strong></li>
+</ol>   - Automatically protected upon creation
+   - Optional registration with US Copyright Office: $65
+<ol><li class="ol-item"><strong>Trade Secrets</strong></li>
+</ol>   - AI prompt engineering techniques
+   - Proprietary resume scoring algorithm
+   - Job matching ranking model
+   - Protect with NDAs and access controls
+<ol><li class="ol-item"><strong>Patents (Year 2-3)</strong></li>
+</ol>   - "Method for AI-driven resume optimization using job description keyword extraction"
+   - Provisional patent: ~$2,000
+   - Full patent: ~$10,000-30,000
+<hr/>
+<h1>7. Accounting & Financial Infrastructure</h1>
+<h2>7.1 Accounting Setup (Day 1)</h2>
+<h3>Software Stack</h3>
+<table><thead><tr><th>Tool</th><th>Purpose</th><th>Cost</th></tr></thead><tbody><tr><td><strong>Mercury</strong></td><td>US business bank account</td><td>Free</td></tr><tr><td><strong>Stripe</strong></td><td>Payment processing</td><td>2.9% + 30¢ per transaction</td></tr><tr><td><strong>QuickBooks Online</strong></td><td>Bookkeeping & accounting</td><td>$30/month</td></tr><tr><td><strong>Carta</strong></td><td>Cap table management</td><td>Free for early stage</td></tr><tr><td><strong>Gusto</strong> or <strong>Deel</strong></td><td>Payroll (US/international)</td><td>$40+/month</td></tr><tr><td><strong>Fyle</strong> or <strong>Expensify</strong></td><td>Expense tracking</td><td>$5/month</td></tr><tr><td><strong>Stripe Tax</strong></td><td>Sales tax automation</td><td>0.5% per transaction</td></tr></tbody></table>
+<h3>Bangladesh Banking</h3>
+<ul><li>Open a business account at <strong>Brac Bank</strong> or <strong>City Bank</strong> (best for receiving international wire transfers)</li>
+<li>Register for <strong>Payoneer</strong> or <strong>Wise Business</strong> for receiving USD from Stripe → converting to BDT</li>
+<li>Keep receipts for everything (crucial for tax deductions)</li>
+</ul>
+<h2>7.2 Tax Obligations</h2>
+<h3>USA (Delaware C-Corp)</h3>
+<ul><li><strong>Federal Corporate Tax:</strong> 21% on profits</li>
+<li><strong>Delaware Franchise Tax:</strong> $400/year minimum</li>
+<li><strong>State Tax:</strong> 0% in Delaware (no corporate income tax on out-of-state revenue)</li>
+<li><strong>Quarterly Estimated Tax:</strong> File Form 1120-ES</li>
+<li><strong>Annual Filing:</strong> Form 1120 (due March 15 or with extension September 15)</li>
+<li><strong>Sales Tax:</strong> Varies by state where customers are (use Stripe Tax to auto-calculate)</li>
+</ul>
+<h3>Bangladesh</h3>
+<ul><li><strong>Personal Income Tax:</strong> 0-30% graduated</li>
+<li><strong>Corporate Tax (if BD entity):</strong> 20% for IT-enabled services (reduced rate!)</li>
+<li><strong>VAT:</strong> 15% standard, but IT/ITES services may qualify for VAT exemption</li>
+<li><strong>File annually</strong> with NBR (National Board of Revenue)</li>
+</ul>
+<h3>Key Tax Strategies</h3>
+<ol><li class="ol-item"><strong>R&D Tax Credit</strong> — The US offers up to $250K/year in R&D tax credits for startups. Your AI development qualifies!</li>
+<li class="ol-item"><strong>Transfer Pricing</strong> — Pay the BD subsidiary a fair market rate for engineering services. This moves some profit to the lower-tax BD entity legally.</li>
+<li class="ol-item"><strong>QSBS Exclusion</strong> — If the Delaware C-Corp qualifies as a Qualified Small Business Stock (QSBS), founders can exclude up to $10M in capital gains tax when they sell shares!</li>
+</ol>
+<h2>7.3 Hiring a CPA/Accountant</h2>
+<strong>For US entity:</strong>
+<ul><li><strong>Kruze Consulting</strong> — Specializes in startup accounting ($500-2,000/month)</li>
+<li><strong>Pilot</strong> — AI-powered bookkeeping for startups ($500+/month)</li>
+<li><strong>Bench</strong> — Budget bookkeeping ($300/month)</li>
+</ul>
+<strong>For Bangladesh entity:</strong>
+<ul><li>Hire a local CA (Chartered Accountant) — ~20,000-50,000 BDT/month</li>
+</ul>
+<h2>7.4 Financial Controls</h2>
+<ol><li class="ol-item"><strong>Separate personal and business finances completely</strong> — NEVER mix them</li>
+<li class="ol-item"><strong>Two-signature rule</strong> for any expense > $5,000</li>
+<li class="ol-item"><strong>Monthly financial review</strong> — P&L, cash balance, burn rate, runway</li>
+<li class="ol-item"><strong>Quarterly board updates</strong> (once funded)</li>
+<li class="ol-item"><strong>Annual audit</strong> (required from Series A onward)</li>
+</ol>
+<hr/>
+<h1>8. Fundraising Strategy</h1>
+<h2>8.1 Fundraising Timeline</h2>
+<h3>Pre-Seed (Now - Month 3): $50K - $150K</h3>
+<strong>Purpose:</strong> Hire 1-2 engineers, cover hosting costs, marketing budget
+<strong>Sources:</strong>
+<ul><li>Personal savings / family & friends</li>
+<li>Bangladeshi angel investors (BD Angels, SBK Tech Ventures)</li>
+<li>Micro VCs (Hustle Fund, Precursor Ventures)</li>
+<li>Revenue from early customers (bootstrap as much as possible!)</li>
+<li>Government grants (ICT Division, Startup Bangladesh)</li>
+</ul>
+<strong>Instrument:</strong> SAFE Note (Simple Agreement for Future Equity) — Use Y Combinator's template (free)
+<h3>Seed (Month 6-9): $500K - $2M</h3>
+<strong>Purpose:</strong> Hire team of 5-8, launch Chrome extension, reach 1,000 paying users
+<strong>Target Investors:</strong>
+<ul><li>Y Combinator (apply! — $500K for 7% equity standard deal)</li>
+<li>Techstars</li>
+<li>500 Global</li>
+<li>Wavemaker Partners (Asia focus)</li>
+<li>Anchorless Bangladesh (BD-focused VC)</li>
+<li>Angel syndicates on AngelList</li>
+</ul>
+<strong>Metrics Needed:</strong>
+<ul><li>500+ paying subscribers</li>
+<li>$5K+ MRR (Monthly Recurring Revenue)</li>
+<li>< 5% monthly churn</li>
+<li>Clear product-market fit signal (NPS > 50)</li>
+</ul>
+<h3>Series A (Month 18-24): $5M - $15M</h3>
+<strong>Purpose:</strong> Scale to 50K users, launch enterprise product, expand to 3 countries
+<strong>Target Investors:</strong>
+<ul><li>a16z (Andreessen Horowitz)</li>
+<li>Sequoia Capital</li>
+<li>Accel</li>
+<li>Tiger Global</li>
+<li>Lightspeed Venture Partners</li>
+</ul>
+<strong>Metrics Needed:</strong>
+<ul><li>$100K+ MRR</li>
+<li>10,000+ paying subscribers</li>
+<li>20%+ month-over-month growth</li>
+<li>Net Revenue Retention > 110%</li>
+<li>Clear path to $1M ARR</li>
+</ul>
+<h3>Series B (Month 30-36): $30M - $75M</h3>
+<strong>Purpose:</strong> International expansion, build enterprise sales team, M&A (acquire smaller competitors)
+<strong>Metrics Needed:</strong>
+<ul><li>$1M+ MRR ($12M+ ARR)</li>
+<li>100,000+ paying subscribers</li>
+<li>Enterprise customers contributing 25%+ revenue</li>
+<li>Operations in 5+ countries</li>
+</ul>
+<h3>Series C (Month 42-48): $100M - $200M</h3>
+<strong>Purpose:</strong> Dominate the category, launch marketplace, pre-IPO preparations
+<strong>Metrics Needed:</strong>
+<ul><li>$5M+ MRR ($60M+ ARR)</li>
+<li>500,000+ paying subscribers</li>
+<li>Profitable or clear path to profitability</li>
+<li>Category leader in 3+ regions</li>
+</ul>
+<h3>Series D / Pre-IPO (Month 54-60): $200M+</h3>
+<strong>Purpose:</strong> Final growth push, IPO preparation
+<h3>IPO (Year 5-7)</h3>
+<ul><li>List on NASDAQ or NYSE</li>
+<li>Minimum $100M ARR typically required</li>
+<li>Engage Goldman Sachs / Morgan Stanley as underwriters</li>
+</ul>
+<h2>8.2 Cap Table Management</h2>
+<strong>Recommended Allocation:</strong>
+<table><thead><tr><th>Stakeholder</th><th>Ownership at Founding</th><th>Post-Seed</th><th>Post-Series A</th><th>Pre-IPO</th></tr></thead><tbody><tr><td>Founders</td><td>100%</td><td>80%</td><td>55%</td><td>25-30%</td></tr><tr><td>Employee Option Pool</td><td>0%</td><td>10%</td><td>15%</td><td>15%</td></tr><tr><td>Seed Investors</td><td>0%</td><td>10%</td><td>8%</td><td>5%</td></tr><tr><td>Series A</td><td>0%</td><td>0%</td><td>22%</td><td>15%</td></tr><tr><td>Series B+</td><td>0%</td><td>0%</td><td>0%</td><td>35-40%</td></tr></tbody></table>
+<strong>Critical Rule:</strong> Never give away more than 20-25% in any single round!
+<h2>8.3 Pitch Deck Structure (12 slides)</h2>
+<ol><li class="ol-item">Cover — ResuMate: AI-Powered Career Intelligence</li>
+<li class="ol-item">Problem — Job searching is broken (stats + emotional story)</li>
+<li class="ol-item">Solution — Live product demo (show the AI tailoring in action)</li>
+<li class="ol-item">Market — $47B TAM, $12B SAM, $500M SOM</li>
+<li class="ol-item">Traction — MRR, user growth chart, retention metrics</li>
+<li class="ol-item">Product — Screenshots, feature roadmap</li>
+<li class="ol-item">Business Model — Pricing tiers, unit economics</li>
+<li class="ol-item">Competition — Matrix showing ResuMate's unique position</li>
+<li class="ol-item">Go-to-Market — Growth channels, CAC, LTV</li>
+<li class="ol-item">Team — Founder story, key hires</li>
+<li class="ol-item">Financials — 3-year projections, key metrics</li>
+<li class="ol-item">Ask — Amount raising, use of funds, milestones</li>
+</ol>
+<hr/>
+<h1>9. Team Building & Organizational Design</h1>
+<h2>9.1 Hiring Roadmap</h2>
+<h3>Phase 1: Founding Team (0-6 months) — 1-3 people</h3>
+<table><thead><tr><th>Role</th><th>Priority</th><th>Salary Range (USD)</th></tr></thead><tbody><tr><td>Founder/CEO (You)</td><td>—</td><td>$0-3,000/month (minimal)</td></tr><tr><td>Co-Founder/CTO (if applicable)</td><td>P0</td><td>Equity-heavy</td></tr><tr><td>First Engineer (Full-Stack)</td><td>P0</td><td>$1,500-3,000/month (BD rate)</td></tr></tbody></table>
+<h3>Phase 2: Core Team (6-12 months) — 5-8 people</h3>
+<table><thead><tr><th>Role</th><th>Priority</th><th>Salary Range (USD)</th></tr></thead><tbody><tr><td>Frontend Engineer</td><td>P0</td><td>$1,500-2,500/month</td></tr><tr><td>Backend Engineer</td><td>P0</td><td>$1,500-2,500/month</td></tr><tr><td>AI/ML Engineer</td><td>P1</td><td>$2,000-4,000/month</td></tr><tr><td>Product Designer (UI/UX)</td><td>P1</td><td>$1,000-2,000/month</td></tr><tr><td>Growth Marketer</td><td>P1</td><td>$1,000-2,000/month</td></tr><tr><td>Customer Support (part-time)</td><td>P2</td><td>$500-800/month</td></tr></tbody></table>
+<h3>Phase 3: Scale Team (Year 2) — 15-25 people</h3>
+Add: Head of Sales, DevOps, Data Analyst, Content Marketer, 3-5 more engineers, QA
+<h3>Phase 4: Growth Team (Year 3) — 50-100 people</h3>
+Add: VP Engineering, VP Sales, VP Marketing, HR Manager, Finance Manager, Legal Counsel, Regional Managers
+<h3>Phase 5: Enterprise (Year 4-5) — 200-500 people</h3>
+Add: C-suite (CFO, COO, CMO, CISO), Department heads, International offices
+<h2>9.2 Where to Hire</h2>
+<table><thead><tr><th>Source</th><th>Best For</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Your university network</strong></td><td>First 1-2 hires</td><td>Loyalty + low cost</td></tr><tr><td><strong>LinkedIn</strong></td><td>Senior roles</td><td>Post jobs + reach out</td></tr><tr><td><strong>Toptal / Upwork</strong></td><td>Contract work</td><td>Good for specific tasks</td></tr><tr><td><strong>AngelList Talent</strong></td><td>Startup-minded engineers</td><td>Equity-motivated</td></tr><tr><td><strong>Deel / Remote.com</strong></td><td>International payroll</td><td>Handles compliance</td></tr><tr><td><strong>University job boards</strong></td><td>Interns</td><td>Very affordable</td></tr></tbody></table>
+<h2>9.3 Equity & Compensation</h2>
+<strong>Employee Stock Option Pool (ESOP):</strong>
+<ul><li>Reserve 10-15% of shares for employees</li>
+<li>Use Carta or Pulley for cap table management</li>
+<li>Standard vesting: 4 years with 1-year cliff</li>
+<li>Exercise window: 10 years (generous) or 90 days (standard)</li>
+</ul>
+<strong>Compensation Philosophy:</strong>
+<ul><li>Pay slightly below market in cash</li>
+<li>Make up the difference (and more) in equity</li>
+<li>As funding grows, increase cash compensation to market rate</li>
+</ul>
+<hr/>
+<h1>10. Marketing & Growth Engine</h1>
+<h2>10.1 Growth Channels (Ranked by Priority)</h2>
+<h3>Channel 1: Content Marketing & SEO (Highest ROI)</h3>
+<strong>Strategy:</strong> Become the #1 Google result for every resume-related query.
+<strong>Content Plan:</strong>
+<ul><li>"How to tailor your resume for [Company Name]" — 500+ articles targeting specific companies</li>
+<li>"Best resume format for [Job Title]" — 1,000+ articles</li>
+<li>"ATS-friendly resume guide for [Industry]" — 200+ articles</li>
+<li>YouTube: "Watch AI Rewrite This Resume in 60 Seconds" — viral potential</li>
+<li>TikTok: Before/after resume transformations — 30-60 second clips</li>
+</ul>
+<strong>Target Keywords:</strong>
+<ul><li>"resume builder" (110K searches/month)</li>
+<li>"tailor resume to job description" (12K/month)</li>
+<li>"ATS resume checker" (8K/month)</li>
+<li>"resume for [specific company]" (thousands of long-tail keywords)</li>
+</ul>
+<h3>Channel 2: Viral Product Features</h3>
+<ul><li><strong>Shareable resume score:</strong> "My resume scored 94% on ResuMate! 🎯" — social sharing</li>
+<li><strong>Referral program:</strong> Give 1 month free for every friend who signs up</li>
+<li><strong>Chrome Extension:</strong> One-click "ResuMate This Job" on LinkedIn/Indeed pages</li>
+<li><strong>Free resume review tool:</strong> Upload resume → get free score → upsell to paid plan</li>
+</ul>
+<h3>Channel 3: Community & Social Media</h3>
+<ul><li><strong>Reddit:</strong> Actively help in r/resumes, r/jobs, r/careerguidance (100K+ subscribers each)</li>
+<li><strong>TikTok/Instagram Reels:</strong> Before/after resume transformations</li>
+<li><strong>Twitter/X:</strong> Share job market insights, hiring trends, tips</li>
+<li><strong>Discord/Slack:</strong> Build a "ResuMate Job Seekers" community</li>
+</ul>
+<h3>Channel 4: Partnerships</h3>
+<ul><li><strong>Universities:</strong> Offer free or discounted access to students (they become lifelong users)</li>
+<li><strong>Bootcamps:</strong> Lambda School, Microverse, etc. — integrate ResuMate into curriculum</li>
+<li><strong>Career coaches:</strong> Affiliate program (20% commission)</li>
+<li><strong>HR influencers:</strong> Sponsored content</li>
+</ul>
+<h3>Channel 5: Paid Advertising (After Product-Market Fit)</h3>
+<ul><li><strong>Google Ads:</strong> High-intent keywords ("resume builder", "tailor resume")</li>
+<li><strong>LinkedIn Ads:</strong> Target job seekers and HR professionals</li>
+<li><strong>Facebook/Instagram:</strong> Retargeting past visitors</li>
+<li><strong>Budget:</strong> Start at $1,000/month, scale to $50,000/month as CAC remains profitable</li>
+</ul>
+<h2>10.2 Launch Strategy</h2>
+<h3>Soft Launch (Month 1-2)</h3>
+<ul><li>Share on personal social media, university WhatsApp groups</li>
+<li>Post on Product Hunt, Hacker News, IndieHackers</li>
+<li>Reach out to 50 friends/contacts for beta testing</li>
+<li>Collect feedback, fix bugs, iterate</li>
+</ul>
+<h3>Public Launch (Month 3)</h3>
+<ul><li><strong>Product Hunt Launch Day</strong> — aim for #1 Product of the Day</li>
+<li>Press outreach to TechCrunch, The Verge, Mashable</li>
+<li>Reddit posts in relevant subreddits</li>
+<li>Email to all beta users: "We're live! Invite your friends."</li>
+</ul>
+<h3>Ongoing Growth (Month 4+)</h3>
+<ul><li>Weekly blog posts (SEO)</li>
+<li>Daily social media content</li>
+<li>Monthly webinars ("How to Land Your Dream Job")</li>
+<li>Quarterly feature launches (keep the buzz going)</li>
+</ul>
+<hr/>
+<h1>11. International Expansion Plan</h1>
+<h2>Phase 1 (Year 1): Bangladesh + English-speaking markets</h2>
+<ul><li>Bangladesh (home market, Bangla + English)</li>
+<li>USA, UK, Canada, Australia (English)</li>
+<li>India (English + Hindi, massive market)</li>
+</ul>
+<h2>Phase 2 (Year 2): South & Southeast Asia</h2>
+<ul><li>Pakistan, Sri Lanka, Nepal</li>
+<li>Indonesia, Philippines, Malaysia</li>
+<li>Localize UI + AI prompts for local languages</li>
+</ul>
+<h2>Phase 3 (Year 3): Middle East & Europe</h2>
+<ul><li>UAE, Saudi Arabia, Qatar (Arabic + English)</li>
+<li>Germany, France, Spain (localized)</li>
+<li>Turkey, Egypt, Nigeria</li>
+</ul>
+<h2>Phase 4 (Year 4-5): Global Coverage</h2>
+<ul><li>Latin America (Spanish, Portuguese)</li>
+<li>East Asia (Japanese, Korean, Chinese)</li>
+<li>Africa (English, French, Swahili)</li>
+</ul>
+<h3>Localization Requirements</h3>
+<ul><li>Translate UI into 15+ languages</li>
+<li>Adapt AI prompts for local resume formats (e.g., photo on resume is standard in some countries, forbidden in others)</li>
+<li>Local payment methods (bKash in BD, UPI in India, M-Pesa in Africa)</li>
+<li>Local job board integrations</li>
+<li>Comply with local data privacy laws (GDPR in EU, PDPA in Singapore, etc.)</li>
+</ul>
+<hr/>
+<h1>12. Risk Management & Compliance</h1>
+<h2>12.1 Key Risks & Mitigations</h2>
+<table><thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Mitigation</th></tr></thead><tbody><tr><td>AI hallucination (fake experience on resume)</td><td>Medium</td><td>High</td><td>Clear disclaimer + human review prompt</td></tr><tr><td>Data breach (user resumes leaked)</td><td>Low</td><td>Critical</td><td>Encryption at rest + in transit, SOC 2</td></tr><tr><td>Google/Gemini API price increase</td><td>Medium</td><td>Medium</td><td>Abstract AI provider, support multiple LLMs</td></tr><tr><td>Competitor with more funding</td><td>High</td><td>Medium</td><td>Move fast, build brand loyalty, community</td></tr><tr><td>Regulatory change (AI in hiring)</td><td>Low</td><td>Medium</td><td>Stay compliant, join industry associations</td></tr><tr><td>Key person risk (founder burnout)</td><td>Medium</td><td>High</td><td>Build team early, delegate, take breaks</td></tr><tr><td>Currency risk (BDT/USD fluctuation)</td><td>Medium</td><td>Low</td><td>Keep USD revenue in USD account</td></tr></tbody></table>
+<h2>12.2 Compliance Checklist</h2>
+<div class="checkbox">☐ GDPR compliance (for EU users) — Right to deletion, data portability</div>
+<div class="checkbox">☐ CCPA compliance (for California users) — Privacy rights</div>
+<div class="checkbox">☐ SOC 2 Type II certification (required for enterprise sales)</div>
+<div class="checkbox">☐ WCAG 2.1 AA accessibility standards</div>
+<div class="checkbox">☐ PCI DSS (handled by Stripe)</div>
+<div class="checkbox">☐ Cookie consent (PECR / ePrivacy)</div>
+<div class="checkbox">☐ AI transparency (disclose AI usage in resume generation)</div>
+<div class="checkbox">☐ Anti-discrimination (ensure AI doesn't bias against protected classes)</div>
+<hr/>
+<h1>13. Key Performance Indicators (KPIs)</h1>
+<h2>North Star Metric</h2>
+<strong>Number of resumes successfully tailored per month</strong> — This directly measures the value we deliver.
+<h2>Dashboard KPIs (Track Weekly)</h2>
+<h3>Growth</h3>
+<ul><li>Monthly Active Users (MAU)</li>
+<li>New signups per week</li>
+<li>Paid conversion rate (free trial → paid)</li>
+<li>Monthly Recurring Revenue (MRR)</li>
+</ul>
+<h3>Engagement</h3>
+<ul><li>Resumes tailored per user per month</li>
+<li>Jobs applied to via ResuMate</li>
+<li>Session duration</li>
+<li>Feature adoption rate</li>
+</ul>
+<h3>Retention</h3>
+<ul><li>Monthly churn rate (target: < 5%)</li>
+<li>Net Revenue Retention (target: > 110%)</li>
+<li>DAU/MAU ratio (target: > 30%)</li>
+</ul>
+<h3>Unit Economics</h3>
+<ul><li>Customer Acquisition Cost (CAC)</li>
+<li>Lifetime Value (LTV)</li>
+<li>LTV:CAC ratio (target: > 3:1)</li>
+<li>Gross margin (target: > 85%)</li>
+</ul>
+<h3>Operational</h3>
+<ul><li>API uptime (target: 99.9%)</li>
+<li>Average response time (target: < 3 seconds)</li>
+<li>Customer support resolution time (target: < 24 hours)</li>
+<li>NPS score (target: > 50)</li>
+</ul>
+<hr/>
+<h1>14. 5-Year Financial Projections</h1>
+<h2>Revenue Projections</h2>
+<table><thead><tr><th>Metric</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody><tr><td>Paying Subscribers</td><td>1,000</td><td>15,000</td><td>100,000</td><td>350,000</td><td>800,000</td></tr><tr><td>Average Revenue Per User (ARPU)</td><td>$18/mo</td><td>$20/mo</td><td>$22/mo</td><td>$25/mo</td><td>$28/mo</td></tr><tr><td>Monthly Recurring Revenue (MRR)</td><td>$18K</td><td>$300K</td><td>$2.2M</td><td>$8.75M</td><td>$22.4M</td></tr><tr><td>Annual Recurring Revenue (ARR)</td><td>$216K</td><td>$3.6M</td><td>$26.4M</td><td>$105M</td><td>$269M</td></tr><tr><td>B2B Revenue</td><td>$0</td><td>$360K</td><td>$6.6M</td><td>$45M</td><td>$115M</td></tr><tr><td>Total Revenue</td><td>$216K</td><td>$3.96M</td><td>$33M</td><td>$150M</td><td>$384M</td></tr></tbody></table>
+<h2>Expense Projections</h2>
+<table><thead><tr><th>Category</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody><tr><td>Engineering (salaries)</td><td>$80K</td><td>$500K</td><td>$3M</td><td>$15M</td><td>$40M</td></tr><tr><td>AI/Infrastructure</td><td>$12K</td><td>$200K</td><td>$2M</td><td>$10M</td><td>$25M</td></tr><tr><td>Marketing & Sales</td><td>$20K</td><td>$500K</td><td>$5M</td><td>$25M</td><td>$60M</td></tr><tr><td>G&A (legal, accounting, office)</td><td>$15K</td><td>$200K</td><td>$1.5M</td><td>$8M</td><td>$20M</td></tr><tr><td>Total Expenses</td><td>$127K</td><td>$1.4M</td><td>$11.5M</td><td>$58M</td><td>$145M</td></tr></tbody></table>
+<h2>Profitability</h2>
+<table><thead><tr><th>Metric</th><th>Year 1</th><th>Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th></tr></thead><tbody><tr><td>Net Income</td><td>$89K</td><td>$2.56M</td><td>$21.5M</td><td>$92M</td><td>$239M</td></tr><tr><td>Net Margin</td><td>41%</td><td>65%</td><td>65%</td><td>61%</td><td>62%</td></tr><tr><td>Cash on Hand</td><td>$200K</td><td>$5M</td><td>$50M</td><td>$200M</td><td>$500M+</td></tr></tbody></table>
+<em>Note: These are optimistic projections assuming strong product-market fit and successful fundraising. Actual results may vary. Adjust expectations accordingly and always maintain at least 18 months of runway.</em>
+<hr/>
+<h1>15. Exit Strategy & IPO Preparation</h1>
+<h2>Option 1: IPO (Initial Public Offering) — Preferred</h2>
+<ul><li><strong>Timeline:</strong> Year 5-7</li>
+<li><strong>Target Exchange:</strong> NASDAQ</li>
+<li><strong>Minimum Requirements:</strong> $100M+ ARR, 3 quarters of profitability (or clear path)</li>
+<li><strong>Preparation:</strong> Hire CFO at Year 3, engage Big 4 auditor (Deloitte/PwC/EY/KPMG), SOX compliance</li>
+<li><strong>Investment Banks:</strong> Goldman Sachs, Morgan Stanley, JP Morgan (underwriters)</li>
+<li><strong>Target Valuation at IPO:</strong> $3B-5B (10-15x ARR multiple for SaaS)</li>
+</ul>
+<h2>Option 2: Acquisition</h2>
+<ul><li><strong>Potential Acquirers:</strong> LinkedIn (Microsoft), Indeed (Recruit Holdings), Workday, SAP SuccessFactors, Oracle HCM</li>
+<li><strong>Target Acquisition Price:</strong> $1B+ (after reaching $50M+ ARR)</li>
+<li><strong>Negotiation:</strong> Engage an M&A advisory firm (Qatalyst Partners, Allen & Company)</li>
+</ul>
+<h2>Option 3: Stay Private</h2>
+<ul><li>If profitable and growing, no obligation to exit</li>
+<li>Continue collecting profits and building value</li>
+<li>Consider secondary sales for early investors/employees to get liquidity</li>
+</ul>
+<hr/>
+<h1>16. Appendix: Action Checklists</h1>
+<h2>Week 1 Checklist (Do RIGHT NOW)</h2>
+<div class="checkbox">☐ Register trade license in Dhaka</div>
+<div class="checkbox">☐ Apply for TIN with NBR</div>
+<div class="checkbox">☐ Open Brac Bank business account</div>
+<div class="checkbox">☐ Sign up for Stripe Atlas ($500) — get Delaware C-Corp</div>
+<div class="checkbox">☐ Open Mercury bank account (after incorporation)</div>
+<div class="checkbox">☐ Register resumate.com/.io/.ai domains</div>
+<div class="checkbox">☐ File trademark application in Bangladesh (DPDT)</div>
+<div class="checkbox">☐ Set up QuickBooks Online</div>
+<div class="checkbox">☐ Write Terms of Service and Privacy Policy (use Termly.io)</div>
+<div class="checkbox">☐ Set GEMINI_API_KEY in Vercel environment variables</div>
+<div class="checkbox">☐ Verify all app features work on live site</div>
+<div class="checkbox">☐ Share the app with 20 friends for beta testing</div>
+<h2>Month 1 Checklist</h2>
+<div class="checkbox">☐ Get 50 beta users</div>
+<div class="checkbox">☐ Collect feedback on every feature</div>
+<div class="checkbox">☐ Fix all reported bugs</div>
+<div class="checkbox">☐ Launch Chrome extension MVP</div>
+<div class="checkbox">☐ Write 10 SEO blog posts</div>
+<div class="checkbox">☐ Create social media accounts (Twitter, LinkedIn, TikTok, Instagram)</div>
+<div class="checkbox">☐ Post first TikTok: "Watch AI rewrite this resume"</div>
+<div class="checkbox">☐ Set up Google Analytics & Mixpanel</div>
+<div class="checkbox">☐ Prepare pitch deck (12 slides)</div>
+<div class="checkbox">☐ Apply to Y Combinator (next batch)</div>
+<h2>Month 3 Checklist</h2>
+<div class="checkbox">☐ Reach 200 paying subscribers</div>
+<div class="checkbox">☐ Launch on Product Hunt</div>
+<div class="checkbox">☐ Reach $3,000 MRR</div>
+<div class="checkbox">☐ Hire first engineer</div>
+<div class="checkbox">☐ Start outreach to university career centers</div>
+<div class="checkbox">☐ Apply to 5 accelerator programs</div>
+<div class="checkbox">☐ File US trademark (USPTO)</div>
+<div class="checkbox">☐ Begin Series Seed fundraising</div>
+<h2>Month 6 Checklist</h2>
+<div class="checkbox">☐ Reach 1,000 paying subscribers</div>
+<div class="checkbox">☐ Reach $15,000 MRR</div>
+<div class="checkbox">☐ Close Seed round ($500K-2M)</div>
+<div class="checkbox">☐ Hire team to 5 people</div>
+<div class="checkbox">☐ Launch mobile-responsive PWA</div>
+<div class="checkbox">☐ Launch in 3 countries</div>
+<div class="checkbox">☐ Begin enterprise sales outreach</div>
+<h2>Year 1 Checklist</h2>
+<div class="checkbox">☐ Reach 5,000 paying subscribers</div>
+<div class="checkbox">☐ Reach $50,000+ MRR</div>
+<div class="checkbox">☐ Team of 8-10 people</div>
+<div class="checkbox">☐ Chrome extension with 10,000+ installs</div>
+<div class="checkbox">☐ 100+ SEO articles published</div>
+<div class="checkbox">☐ Speaking at 2+ tech conferences</div>
+<div class="checkbox">☐ Begin Series A fundraising prep</div>
+<hr/>
+<h1>Final Words — Bismillah</h1>
+<blockquote>"Indeed, Allah does not change the condition of a people until they change what is in themselves."<br/>— Quran 13:11</blockquote>
+<p>This roadmap is not just a business plan — it is a blueprint for building something that genuinely helps millions of people find dignified employment, IN SHA ALLAH. The technology exists, the market is ready, and the timing is perfect.</p>
+<p>Every billion-dollar company started with a single commit, a single user, and a single belief that it was possible.</p>
+<strong>ResuMate is that first commit. The rest is ahead of us, IN SHA ALLAH.</strong>
+<hr/>
+<em>This document is confidential and proprietary to ResuMate Inc.</em>
+<em>Last Updated: September 2026</em>
+<em>Version: 1.0</em>
+</div>
+
+<div class="footer">
+  ResuMate Inc. — Confidential & Proprietary — September 2026 — Page <span class="pageNumber"></span>
+</div>
+
+</body>
+</html>
