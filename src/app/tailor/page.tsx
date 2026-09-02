@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
-import { Sparkles, LayoutDashboard, FileText, Settings, Copy, LogOut } from "lucide-react";
+import { Sparkles, LayoutDashboard, FileText, Settings, Copy, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,7 @@ export default function TailorPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleTailor = async () => {
     if (!baseCv.trim() || !jobDescription.trim()) {
@@ -53,27 +54,41 @@ export default function TailorPage() {
 
   return (
     <div className={styles.layout}>
-      <aside className={styles.sidebar}>
-        <div className={styles.logo}><Sparkles /> ResuMate</div>
+      {/* Mobile overlay */}
+      {sidebarOpen && <div className={styles.sidebarOverlay} onClick={() => setSidebarOpen(false)} />}
+
+      {/* Sidebar */}
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className={styles.logo}><Sparkles size={18} /> ResuMate</div>
+          <button onClick={() => setSidebarOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--foreground-muted)", display: "flex", padding: "4px" }}>
+            <X size={20} />
+          </button>
+        </div>
         <nav className={styles.navMenu}>
-          <Link href="/dashboard" className={styles.navItem}>
-            <LayoutDashboard size={20} /> Dashboard
+          <Link href="/dashboard" className={styles.navItem} onClick={() => setSidebarOpen(false)}>
+            <LayoutDashboard size={18} /> Dashboard
           </Link>
-          <Link href="/tailor" className={styles.navItemActive}>
-            <FileText size={20} /> Resume Tailor
+          <Link href="/tailor" className={styles.navItemActive} onClick={() => setSidebarOpen(false)}>
+            <FileText size={18} /> Resume Tailor
           </Link>
-          <Link href="/settings" className={styles.navItem}>
-            <Settings size={20} /> Settings
+          <Link href="/settings" className={styles.navItem} onClick={() => setSidebarOpen(false)}>
+            <Settings size={18} /> Settings
           </Link>
         </nav>
         <button className={styles.logoutBtn} onClick={handleLogout}>
-          <LogOut size={18} /> Log Out
+          <LogOut size={16} /> Log Out
         </button>
       </aside>
 
       <main className={styles.mainContent}>
         <header className={styles.header}>
-          <h1>Tailor Your Resume</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
+            <button className={styles.hamburger} onClick={() => setSidebarOpen(v => !v)} aria-label="Open menu">
+              <Menu size={20} />
+            </button>
+            <h1>Tailor Your Resume</h1>
+          </div>
         </header>
 
         <div className={styles.workspace}>

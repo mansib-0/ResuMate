@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "./page.module.css";
 import {
   Sparkles, LayoutDashboard, FileText, Settings, Upload,
-  Bell, Search, CheckCircle, Plus, Trash2, LogOut, Briefcase
+  Bell, Search, CheckCircle, Plus, Trash2, LogOut, Briefcase, Menu, X
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -76,6 +76,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"search" | "kanban">("search");
   const [showNotif, setShowNotif] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Job Search state
   const [file, setFile] = useState<File | null>(null);
@@ -177,21 +178,26 @@ export default function Dashboard() {
 
   // ── Sidebar ──────────────────────────────────────────────────────────────
   const Sidebar = () => (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}><Sparkles /> ResuMate Pro</div>
+    <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className={styles.logo}><Sparkles size={18} /> ResuMate</div>
+        <button onClick={() => setSidebarOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--foreground-muted)", display: "flex", padding: "4px" }}>
+          <X size={20} />
+        </button>
+      </div>
       <nav className={styles.navMenu}>
-        <Link href="/dashboard" className={styles.navItemActive}>
-          <LayoutDashboard size={20} /> Dashboard
+        <Link href="/dashboard" className={styles.navItemActive} onClick={() => setSidebarOpen(false)}>
+          <LayoutDashboard size={18} /> Dashboard
         </Link>
-        <Link href="/tailor" className={styles.navItem}>
-          <FileText size={20} /> Resume Tailor
+        <Link href="/tailor" className={styles.navItem} onClick={() => setSidebarOpen(false)}>
+          <FileText size={18} /> Resume Tailor
         </Link>
-        <Link href="/settings" className={styles.navItem}>
-          <Settings size={20} /> Settings
+        <Link href="/settings" className={styles.navItem} onClick={() => setSidebarOpen(false)}>
+          <Settings size={18} /> Settings
         </Link>
       </nav>
       <button className={styles.logoutBtn} onClick={handleLogout}>
-        <LogOut size={18} /> Log Out
+        <LogOut size={16} /> Log Out
       </button>
     </aside>
   );
@@ -199,11 +205,20 @@ export default function Dashboard() {
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div className={styles.dashboardLayout}>
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className={styles.sidebarOverlay} onClick={() => setSidebarOpen(false)} />
+      )}
       <Sidebar />
       <main className={styles.mainContent}>
         {/* Header */}
         <header className={styles.header}>
-          <h1>{activeTab === "search" ? "Job Search" : "Kanban Tracker"}</h1>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
+            <button className={styles.hamburger} onClick={() => setSidebarOpen(v => !v)} aria-label="Open menu">
+              <Menu size={20} />
+            </button>
+            <h1>{activeTab === "search" ? "Job Search" : "Kanban Tracker"}</h1>
+          </div>
           <div className={styles.bellWrapper}>
             <button className={styles.bellBtn} onClick={() => setShowNotif(v => !v)}>
               <Bell size={22} />
