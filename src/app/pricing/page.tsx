@@ -89,7 +89,7 @@ export default function PricingPage() {
         {/* Plan cards */}
         <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
           {/* Pro */}
-          <div className="glass-panel" style={{ width: 360, padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          <div className="glass-panel" style={{ width: "min(360px, 100%)", padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Pro</h2>
             <div style={{ fontSize: "3rem", fontWeight: 700, lineHeight: 1 }}>
               $15<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.5)", fontWeight: 400 }}>/month</span>
@@ -113,7 +113,7 @@ export default function PricingPage() {
           </div>
 
           {/* Ultra Pro */}
-          <div className="glass-panel" style={{ width: 360, padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem", border: "1px solid var(--primary)", position: "relative" }}>
+          <div className="glass-panel" style={{ width: "min(360px, 100%)", padding: "2.5rem", display: "flex", flexDirection: "column", gap: "1.5rem", border: "1px solid var(--primary)", position: "relative" }}>
             <div style={{ position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)", background: "var(--primary)", padding: "0.3rem 1.2rem", borderRadius: 20, fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.08em", whiteSpace: "nowrap" }}>
               MOST POPULAR
             </div>
@@ -144,7 +144,8 @@ export default function PricingPage() {
         <div style={{ maxWidth: 760, margin: "5rem auto 0" }}>
           <h2 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "1.75rem" }}>Feature Comparison</h2>
           <div className="glass-panel" style={{ overflow: "hidden" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 400 }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid var(--card-border)" }}>
                   <th style={{ padding: "1rem 1.5rem", textAlign: "left", color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>Feature</th>
@@ -166,6 +167,7 @@ export default function PricingPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </main>

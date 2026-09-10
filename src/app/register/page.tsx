@@ -39,6 +39,20 @@ export default function RegisterPage() {
     }
   };
 
+  const inputStyle: React.CSSProperties = {
+    background: "rgba(0,0,0,0.2)",
+    border: "1px solid var(--card-border)",
+    borderRadius: "8px",
+    padding: "0.9rem 1rem",
+    color: "var(--foreground)",
+    outline: "none",
+    fontFamily: "inherit",
+    fontSize: "16px",
+    width: "100%",
+    transition: "all 0.2s",
+    boxSizing: "border-box",
+  };
+
   return (
     <div className={styles.container}>
       <nav className={styles.nav}>
@@ -50,9 +64,9 @@ export default function RegisterPage() {
         </Link>
       </nav>
 
-      <main style={{ padding: "4rem 0", display: "flex", justifyContent: "center" }}>
-        <div className="glass-panel" style={{ width: "420px", padding: "2.5rem" }}>
-          <h1 style={{ marginBottom: "1.5rem", textAlign: "center", fontSize: "2rem" }}>Create Account</h1>
+      <main style={{ padding: "2rem 0 3rem", display: "flex", justifyContent: "center" }}>
+        <div className="glass-panel" style={{ width: "100%", maxWidth: "420px", padding: "2rem 1.5rem" }}>
+          <h1 style={{ marginBottom: "1.5rem", textAlign: "center", fontSize: "clamp(1.5rem, 5vw, 2rem)" }}>Create Account</h1>
 
           {error && (
             <div style={{ color: "var(--error)", background: "rgba(239,68,68,0.1)", padding: "1rem", borderRadius: "8px", marginBottom: "1.5rem", fontSize: "0.9rem" }}>
@@ -62,37 +76,37 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <label style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>Username</label>
+              <label style={{ fontSize: "0.9rem", color: "var(--foreground-muted)" }}>Username</label>
               <input
                 type="text"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value.toLowerCase())}
-                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none", fontFamily: "inherit" }}
+                style={inputStyle}
                 placeholder="jobhunter99"
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <label style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>Password</label>
+              <label style={{ fontSize: "0.9rem", color: "var(--foreground-muted)" }}>Password</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none", fontFamily: "inherit" }}
+                style={inputStyle}
                 placeholder="At least 6 characters"
               />
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              <label style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>Confirm Password</label>
+              <label style={{ fontSize: "0.9rem", color: "var(--foreground-muted)" }}>Confirm Password</label>
               <input
                 type="password"
                 required
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: "8px", padding: "1rem", color: "white", outline: "none", fontFamily: "inherit" }}
+                style={inputStyle}
                 placeholder="••••••••"
               />
             </div>
@@ -107,7 +121,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.9rem", color: "rgba(255,255,255,0.6)" }}>
+          <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.9rem", color: "var(--foreground-muted)" }}>
             Already have an account?{" "}
             <Link href="/login" style={{ color: "var(--primary)", textDecoration: "underline" }}>
               Log in here
