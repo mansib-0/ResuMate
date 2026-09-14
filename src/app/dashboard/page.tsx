@@ -180,7 +180,9 @@ export default function Dashboard() {
   const Sidebar = () => (
     <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ""}`}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div className={styles.logo}><Sparkles size={18} /> ResuMate</div>
+        <Link href="/" className={styles.logo} style={{ textDecoration: "none" }}>
+          <Sparkles size={18} /> ResuMate
+        </Link>
         <button onClick={() => setSidebarOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--foreground-muted)", display: "flex", padding: "4px" }}>
           <X size={20} />
         </button>

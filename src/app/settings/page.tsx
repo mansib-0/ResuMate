@@ -3,15 +3,26 @@
 import dashStyles from "../dashboard/page.module.css";
 import {
   Sparkles, LayoutDashboard, FileText, Settings, User,
-  CreditCard, Bell, LogOut, Palette, Check, Moon, Sun,
-  Shield, Trash2, ChevronRight, Eye, EyeOff, Menu, X
+  CreditCard, Bell, LogOut, Palette, Check, CheckCircle, Moon, Sun,
+  Shield, Trash2, ChevronRight, Eye, EyeOff, Menu, X,
+  RefreshCw, Laptop, Smartphone, LogIn, QrCode, KeyRound,
+  AlertTriangle
 } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme, THEMES, ThemeId } from "../../context/ThemeContext";
 
 type Section = "appearance" | "account" | "subscription" | "notifications" | "security";
+
+interface Session {
+  id: string;
+  device: string;
+  ip_address: string;
+  created_at: string;
+  last_seen_at: string;
+  is_current: boolean;
+}
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -38,6 +49,88 @@ export default function SettingsPage() {
   const [notifEmail, setNotifEmail] = useState(true);
   const [notifJobMatch, setNotifJobMatch] = useState(true);
   const [notifWeekly, setNotifWeekly] = useState(false);
+
+  // ── Security state ──────────────────────────────────────────────────────────
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
+  const [twoFaEnabled, setTwoFaEnabled] = useState(false);
+  const [twoFaStep, setTwoFaStep] = useState<"idle" | "qr" | "verify" | "done">("idle");
+  const [twoFaSecret, setTwoFaSecret] = useState("");
+  const [twoFaQr, setTwoFaQr] = useState("");
+  const [twoFaCode, setTwoFaCode] = useState("");
+  const [twoFaError, setTwoFaError] = useState("");
+  const [twoFaLoading, setTwoFaLoading] = useState(false);
+  const [lastLogin] = useState(new Date().toLocaleString("en-US", {
+    month: "short", day: "numeric", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  }));
+
+  const loadSessions = useCallback(async () => {
+    setSessionsLoading(true);
+    try {
+      const res = await fetch("/api/auth/sessions");
+      const data = await res.json();
+      setSessions(data.sessions || []);
+    } catch {
+      setSessions([]);
+    } finally {
+      setSessionsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeSection === "security") loadSessions();
+  }, [activeSection, loadSessions]);
+
+  const handleRevokeSession = async (sessionId: string) => {
+    await fetch("/api/auth/sessions", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    });
+    loadSessions();
+  };
+
+  const handleSetup2FA = async () => {
+    setTwoFaLoading(true);
+    setTwoFaError("");
+    try {
+      const res = await fetch("/api/auth/2fa/setup", { method: "POST" });
+      const data = await res.json();
+      setTwoFaSecret(data.secret);
+      setTwoFaQr(data.qrCode || "");
+      setTwoFaStep("qr");
+    } catch {
+      setTwoFaError("Failed to generate QR code. Please try again.");
+    } finally {
+      setTwoFaLoading(false);
+    }
+  };
+
+  const handleVerify2FA = async () => {
+    if (twoFaCode.length !== 6) { setTwoFaError("Enter the 6-digit code."); return; }
+    setTwoFaLoading(true);
+    setTwoFaError("");
+    try {
+      const res = await fetch("/api/auth/2fa/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: twoFaCode, secret: twoFaSecret }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setTwoFaEnabled(true);
+        setTwoFaStep("done");
+        setTwoFaCode("");
+      } else {
+        setTwoFaError("Incorrect code. Check your authenticator app and try again.");
+      }
+    } catch {
+      setTwoFaError("Verification failed. Please try again.");
+    } finally {
+      setTwoFaLoading(false);
+    }
+  };
 
   const inputStyle: React.CSSProperties = {
     background: "rgba(0,0,0,0.2)",
@@ -290,32 +383,145 @@ export default function SettingsPage() {
   );
 
   const SecuritySection = () => (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+      {/* Status overview */}
       <div className="glass-panel" style={{ padding: panelPad }}>
         <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <Shield size={19} color="var(--primary)" /> Security Overview
         </h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
           {[
-            { label: "Password Strength", status: "Strong", statusColor: "var(--success)", icon: "🔒" },
-            { label: "Two-Factor Auth (2FA)", status: "Not Enabled", statusColor: "var(--warning)", icon: "📱" },
-            { label: "Active Sessions", status: "1 Device", statusColor: "var(--primary)", icon: "💻" },
-            { label: "Last Login", status: "Just now", statusColor: "var(--foreground-muted)", icon: "🕐" },
-          ].map((item) => (
-            <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.9rem 1rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", background: "var(--card-bg)", gap: "0.75rem", flexWrap: "wrap" }}>
+            { label: "Password Strength", value: "Strong", color: "var(--success)", icon: "🔒" },
+            { label: "Two-Factor Auth (2FA)", value: twoFaEnabled ? "✓ Enabled" : "Not Enabled", color: twoFaEnabled ? "var(--success)" : "var(--warning)", icon: "📱" },
+            { label: "Active Sessions", value: sessionsLoading ? "Loading…" : `${sessions.length} device${sessions.length !== 1 ? "s" : ""}`, color: "var(--primary)", icon: "💻" },
+            { label: "Last Login", value: lastLogin, color: "var(--foreground-muted)", icon: "🕐" },
+          ].map(item => (
+            <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.85rem 1rem", borderRadius: "var(--radius-sm)", border: "1px solid var(--card-border)", background: "var(--card-bg)", gap: "0.75rem", flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                <span style={{ fontSize: "1.2rem" }}>{item.icon}</span>
-                <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>{item.label}</span>
+                <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
+                <span style={{ fontSize: "0.87rem", fontWeight: 500 }}>{item.label}</span>
               </div>
-              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: item.statusColor, flexShrink: 0 }}>{item.status}</span>
+              <span style={{ fontSize: "0.8rem", fontWeight: 600, color: item.color, flexShrink: 0 }}>{item.value}</span>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: "1.25rem", padding: "1rem", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "var(--radius-sm)" }}>
-          <p style={{ fontSize: "0.85rem", color: "var(--warning)", fontWeight: 600, marginBottom: "0.3rem" }}>⚠ Enable 2FA for maximum security</p>
-          <p className="text-muted" style={{ fontSize: "0.78rem", lineHeight: 1.4 }}>Two-factor authentication adds an extra layer of protection to your account.</p>
-          <button className="btn-primary" style={{ width: "auto", padding: "0.55rem 1rem", fontSize: "0.8rem", marginTop: "0.75rem" }}>Enable 2FA (Coming Soon)</button>
+      </div>
+
+      {/* Two-Factor Authentication */}
+      <div className="glass-panel" style={{ padding: panelPad }}>
+        <h2 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.4rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <KeyRound size={19} color="var(--primary)" /> Two-Factor Authentication
+        </h2>
+        <p className="text-muted" style={{ fontSize: "0.82rem", marginBottom: "1.25rem", lineHeight: 1.5 }}>
+          Add an extra layer of security. Scan the QR code with Google Authenticator or Authy.
+        </p>
+
+        {twoFaStep === "idle" && !twoFaEnabled && (
+          <div>
+            {!twoFaEnabled && (
+              <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: "var(--radius-sm)", padding: "0.9rem 1rem", marginBottom: "1rem", display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
+                <AlertTriangle size={15} color="#f59e0b" style={{ flexShrink: 0, marginTop: 2 }} />
+                <p style={{ fontSize: "0.8rem", color: "#f59e0b", lineHeight: 1.5 }}>2FA is <strong>not enabled</strong>. Your account is less secure without it.</p>
+              </div>
+            )}
+            <button className="btn-primary" style={{ width: "auto", padding: "0.65rem 1.2rem", fontSize: "0.87rem", display: "flex", alignItems: "center", gap: "0.45rem" }}
+              onClick={handleSetup2FA} disabled={twoFaLoading}>
+              {twoFaLoading ? <><RefreshCw size={14} className="animate-spin" /> Generating…</> : <><QrCode size={15} /> Set Up 2FA</>}
+            </button>
+          </div>
+        )}
+
+        {twoFaStep === "qr" && (
+          <div>
+            <p style={{ fontSize: "0.87rem", fontWeight: 600, marginBottom: "0.75rem" }}>
+              1. Scan this QR code with <strong>Google Authenticator</strong> or <strong>Authy</strong>
+            </p>
+            {twoFaQr ? (
+              <img src={twoFaQr} alt="2FA QR Code" style={{ width: 180, height: 180, borderRadius: 10, border: "3px solid rgba(var(--primary-rgb),0.3)", background: "white", display: "block", marginBottom: "1rem" }} />
+            ) : (
+              <div style={{ background: "rgba(var(--primary-rgb),0.08)", border: "1px dashed rgba(var(--primary-rgb),0.3)", borderRadius: 10, padding: "1.5rem", textAlign: "center", marginBottom: "1rem", fontSize: "0.82rem", color: "var(--foreground-muted)" }}>
+                <QrCode size={40} style={{ marginBottom: "0.5rem", opacity: 0.5 }} />
+                <p>Open Google Authenticator and manually add:<br /><strong style={{ color: "var(--primary)", wordBreak: "break-all", fontSize: "0.75rem" }}>{twoFaSecret}</strong></p>
+              </div>
+            )}
+            <p style={{ fontSize: "0.87rem", fontWeight: 600, marginBottom: "0.5rem" }}>2. Enter the 6-digit code from the app:</p>
+            <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+              <input
+                type="number"
+                maxLength={6}
+                placeholder="000000"
+                value={twoFaCode}
+                onChange={e => setTwoFaCode(e.target.value.slice(0, 6))}
+                style={{ background: "rgba(0,0,0,0.2)", border: "1px solid var(--card-border)", borderRadius: 8, padding: "0.75rem 1rem", color: "var(--foreground)", fontSize: "1.3rem", letterSpacing: "0.3em", width: 160, outline: "none", fontFamily: "monospace", textAlign: "center" }}
+              />
+              <button className="btn-primary" style={{ width: "auto", padding: "0.65rem 1.2rem" }} onClick={handleVerify2FA} disabled={twoFaLoading}>
+                {twoFaLoading ? "Verifying…" : "Verify & Enable"}
+              </button>
+              <button className="btn-secondary" style={{ width: "auto", padding: "0.65rem 1rem" }} onClick={() => { setTwoFaStep("idle"); setTwoFaCode(""); setTwoFaError(""); }}>
+                Cancel
+              </button>
+            </div>
+            {twoFaError && <p style={{ color: "var(--error)", fontSize: "0.82rem", marginTop: "0.6rem" }}>{twoFaError}</p>}
+          </div>
+        )}
+
+        {(twoFaStep === "done" || twoFaEnabled) && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.9rem 1rem", background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)", borderRadius: "var(--radius-sm)" }}>
+            <CheckCircle size={20} color="#10b981" />
+            <div>
+              <p style={{ fontWeight: 600, fontSize: "0.9rem" }}>2FA is Active ✓</p>
+              <p className="text-muted" style={{ fontSize: "0.78rem" }}>Your account is protected with two-factor authentication.</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Active Sessions */}
+      <div className="glass-panel" style={{ padding: panelPad }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.1rem", flexWrap: "wrap", gap: "0.5rem" }}>
+          <h2 style={{ fontSize: "1.1rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <Laptop size={19} color="var(--primary)" /> Active Sessions
+          </h2>
+          <button onClick={loadSessions} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--primary)", display: "flex", alignItems: "center", gap: "0.35rem", fontSize: "0.8rem", fontWeight: 600, fontFamily: "inherit", padding: "0.3rem 0.6rem", borderRadius: 6, transition: "background 0.2s" }}>
+            <RefreshCw size={13} /> Refresh
+          </button>
         </div>
+
+        {sessionsLoading ? (
+          <p style={{ color: "var(--foreground-muted)", fontSize: "0.85rem" }}>Loading sessions…</p>
+        ) : sessions.length === 0 ? (
+          <p style={{ color: "var(--foreground-muted)", fontSize: "0.85rem" }}>No active sessions found.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
+            {sessions.map(s => (
+              <div key={s.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.85rem 1rem", borderRadius: "var(--radius-sm)", border: `1px solid ${s.is_current ? "rgba(var(--primary-rgb),0.3)" : "var(--card-border)"}`, background: s.is_current ? "rgba(var(--primary-rgb),0.05)" : "var(--card-bg)", gap: "0.75rem", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
+                  {s.device?.toLowerCase().includes("mobile") || s.device?.toLowerCase().includes("android") || s.device?.toLowerCase().includes("iphone")
+                    ? <Smartphone size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
+                    : <Laptop size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
+                  }
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: "0.87rem", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
+                      {s.device || "Unknown Device"}
+                      {s.is_current && <span style={{ fontSize: "0.68rem", background: "rgba(var(--primary-rgb),0.15)", color: "var(--primary)", padding: "0.1rem 0.45rem", borderRadius: 99, fontWeight: 700 }}>Current</span>}
+                    </p>
+                    <p style={{ fontSize: "0.75rem", color: "var(--foreground-muted)", marginTop: 2 }}>
+                      {s.ip_address} · Last active {new Date(s.last_seen_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                </div>
+                {!s.is_current && (
+                  <button
+                    onClick={() => handleRevokeSession(s.id)}
+                    style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", color: "var(--error)", padding: "0.35rem 0.75rem", borderRadius: 6, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, transition: "all 0.2s", whiteSpace: "nowrap" }}
+                  >
+                    Revoke
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -334,7 +540,10 @@ export default function SettingsPage() {
 
       <aside className={`${dashStyles.sidebar} ${sidebarOpen ? dashStyles.sidebarOpen : ""}`}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div className={dashStyles.logo}><Sparkles size={18} /> ResuMate</div>
+          {/* Logo → home */}
+          <Link href="/" className={dashStyles.logo} style={{ textDecoration: "none" }}>
+            <Sparkles size={18} /> ResuMate
+          </Link>
           <button onClick={() => setSidebarOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--foreground-muted)", display: "flex", padding: "4px" }}><X size={20} /></button>
         </div>
         <nav className={dashStyles.navMenu}>
